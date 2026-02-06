@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import ReviewCard from '../../components/ReviewCard.astro';
+import FAQ from '../../components/FAQ.astro';
+import Sidebar from '../../components/Sidebar.astro';
+
+const comparisonProducts = [
+  { name: 'MacBook Air M3', price: '139만~', weight: '1.24kg', cpu: 'Apple M3', battery: '18시간', display: '13.6" Retina', target: '올라운더', productId: 'macbook-air-m3', isBest: true },
+  { name: 'LG 그램 16 (2025)', price: '159만~', weight: '1.19kg', cpu: 'Intel Ultra 7', battery: '22시간', display: '16" WQXGA', target: '휴대성 중시', productId: 'lg-gram-16' },
+  { name: 'Lenovo IdeaPad Slim 5', price: '84.9만~', weight: '1.89kg', cpu: 'Ryzen 7', battery: '12시간', display: '16" 2.5K IPS', target: '가성비', productId: 'lenovo-ideapad-slim5' },
+  { name: 'Galaxy Book4 Pro', price: '169만~', weight: '1.23kg', cpu: 'Intel Ultra 7', battery: '21시간', display: '16" AMOLED', target: '디스플레이', productId: 'galaxy-book4-pro' },
+  { name: 'ASUS Zenbook 14 OLED', price: '119만~', weight: '1.28kg', cpu: 'Intel Ultra 5', battery: '15시간', display: '14" 2.8K OLED', target: '영상/디자인', productId: 'asus-zenbook-14' },
+  { name: 'HP Pavilion Aero 13', price: '89만~', weight: '0.97kg', cpu: 'Ryzen 7', battery: '10.5시간', display: '13.3" WQXGA', target: '초경량', productId: 'hp-pavilion-aero' },
+  { name: 'Acer Swift Go 14', price: '99만~', weight: '1.25kg', cpu: 'Intel Ultra 5', battery: '13시간', display: '14" 2.8K OLED', target: '가성비 OLED', productId: 'acer-swift-go' },
+];
+
+const faqItems = [
+  { question: 'RAM은 8GB vs 16GB, 어떤 걸 선택해야 하나요?', answer: '2025년 기준, <strong>16GB를 강력히 추천합니다.</strong> 브라우저 탭 10개만 열어도 8GB는 부족합니다. 특히 영상 편집, 코딩 등을 한다면 16GB는 필수입니다. 예산이 넉넉하다면 32GB도 고려하세요.' },
+  { question: '윈도우 vs 맥, 대학생은 어떤 OS가 좋을까요?', answer: '전공에 따라 다릅니다. <strong>공대/컴공:</strong> 특정 소프트웨어 호환 때문에 윈도우가 안전합니다. <strong>인문계/경영:</strong> macOS도 충분합니다. <strong>디자인/영상:</strong> macOS가 업계 표준에 가깝습니다. 확신이 없다면 윈도우가 호환성 면에서 안전한 선택입니다.' },
+  { question: '배터리 스펙은 어느 정도를 봐야 하나요?', answer: '제조사 공칭 기준 <strong>최소 12시간 이상</strong>을 추천합니다. 실사용 기준으로는 보통 공칭의 60~70% 수준입니다. 강의실에서 하루 종일 충전 없이 사용하려면 15시간 이상 모델을 선택하세요.' },
+  { question: 'SSD 256GB vs 512GB, 충분한가요?', answer: '<strong>512GB를 추천합니다.</strong> 256GB는 OS와 필수 앱만 설치해도 절반이 차버립니다. 과제 파일, 강의 자료, 프로그램 설치를 고려하면 512GB가 최소 기준입니다. 영상 작업을 한다면 1TB도 고려하세요.' },
+  { question: '노트북 무게는 어느 정도가 적당할까요?', answer: '캠퍼스에서 매일 들고 다닌다면 <strong>1.4kg 이하</strong>를 추천합니다. 충전기까지 포함하면 실제 휴대 무게는 더 늘어나니까요. 1.2kg 이하라면 이동이 매우 편하고, 1.5kg 이상은 가방이 무겁게 느껴질 수 있습니다.' },
+];
+
+const toc = [
+  { href: '#intro', label: '서론 & 선정 기준' },
+  { href: '#top3', label: 'TOP 3 요약' },
+  { href: '#comparison', label: '비교 테이블' },
+  { href: '#reviews', label: '제품별 상세 리뷰' },
+  { href: '#faq', label: '구매 FAQ' },
+];
+
+const sellers = [
+  { store: 'naver', label: '네이버 쇼핑', price: '1,395,000원', productId: 'macbook-air-m3' },
+  { store: '11st', label: '11번가', price: '1,410,000원', productId: 'macbook-air-m3' },
+  { store: 'amazon', label: 'Amazon', price: '$1,099', productId: 'macbook-air-m3' },
+];
+---
+
+<BaseLayout
+  title="2025년 대학생용 노트북 추천 TOP 7 - HyunTech"
+  description="2025년 대학생용 노트북 추천 TOP 7. 실사용 기준 배터리, 무게, 성능, 가격 대비 최고의 노트북을 선정했습니다."
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href="/category/laptop/">노트북</a> <span class="sep">/</span>
+      <span>대학생 노트북 추천</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-primary">노트북 추천</span>
+      <h1>2025년 대학생용 노트북 추천 TOP 7 (실사용 기준)</h1>
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        <span>2025년 2월 1일 업데이트</span>
+        <span class="divider">|</span>
+        <span>12분 읽기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+
+        <!-- 서론 -->
+        <section id="intro">
+          <p>대학 생활에는 과제 작성, 온라인 강의, 영상 편집, 심지어 코딩까지 다양한 작업이 필요합니다. 하지만 수백 가지 노트북 중 나에게 맞는 제품을 찾기란 쉽지 않습니다.</p>
+          <p>HyunTech 편집팀은 <strong>실제 사용 경험</strong>과 <strong>표준화된 테스트</strong>를 기반으로, 2025년 대학생에게 가장 적합한 노트북 7종을 선정했습니다.</p>
+          <h3>선정 기준</h3>
+          <div class="criteria-grid">
+            <div class="criteria-item"><div class="icon">&#9889;</div><h4>성능</h4><p>멀티태스킹과 일반 작업 성능</p></div>
+            <div class="criteria-item"><div class="icon">&#128267;</div><h4>배터리</h4><p>실사용 기준 배터리 지속시간</p></div>
+            <div class="criteria-item"><div class="icon">&#9878;</div><h4>무게</h4><p>캠퍼스 휴대성</p></div>
+            <div class="criteria-item"><div class="icon">&#128176;</div><h4>가격</h4><p>학생 예산 대비 가치</p></div>
+          </div>
+        </section>
+
+        <!-- TOP 3 -->
+        <section id="top3">
+          <h2>TOP 3 한눈에 보기</h2>
+          <div class="top-picks-inline">
+            <ProductCard rank={1} featured name="MacBook Air M3" subtitle="최고의 올라운드 노트북" badge="최고 추천" badgeType="best" pros={['M3 칩 압도적 성능', '18시간 배터리', '1.24kg 경량']} price="1,390,000원" productId="macbook-air-m3" />
+            <ProductCard rank={2} name="LG 그램 16 (2025)" subtitle="배터리 + 초경량" badge="휴대성 최고" badgeType="primary" pros={['1.19kg 초경량', '22시간 배터리', '16인치 대화면']} price="1,590,000원" productId="lg-gram-16" />
+            <ProductCard rank={3} name="Lenovo IdeaPad Slim 5" subtitle="80만원대 가성비 왕" badge="가성비 최고" badgeType="success" pros={['80만원대 가격', 'Ryzen 7 성능', '2.5K 디스플레이']} price="849,000원" productId="lenovo-ideapad-slim5" />
+          </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section id="comparison">
+          <h2>전체 비교 테이블</h2>
+          <ComparisonTable products={comparisonProducts} />
+        </section>
+
+        <!-- Reviews -->
+        <section id="reviews">
+          <h2>제품별 상세 리뷰</h2>
+
+          <ReviewCard
+            rank={1} name="MacBook Air M3 (2024)" subtitle="최고의 올라운드 대학생 노트북"
+            badge="최고 추천" badgeType="best" score={9.5}
+            specs={[{label:'CPU',value:'Apple M3'},{label:'RAM',value:'8/16/24GB'},{label:'SSD',value:'256/512GB/1TB'},{label:'무게',value:'1.24kg'},{label:'배터리',value:'18시간'}]}
+            pros={['M3 칩 압도적 성능/전력 효율','18시간 실사용 배터리','뛰어난 Liquid Retina 디스플레이','macOS 생태계와 연동','팬리스 무소음 설계']}
+            cons={['RAM 확장 불가','게임 호환성 제한']}
+            recommendation="macOS에 거부감 없는 대학생. 문서 작업, 영상 편집, 코딩 등 대부분의 대학 과제를 무리 없이 처리합니다. 특히 배터리 걱정 없이 종일 캠퍼스에서 사용하고 싶다면 최고의 선택입니다."
+            productId="macbook-air-m3"
+          />
+
+          <ReviewCard
+            rank={2} name="LG 그램 16 (2025)" subtitle="배터리와 휴대성의 왕"
+            badge="휴대성 최고" badgeType="primary" score={9.2}
+            specs={[{label:'CPU',value:'Intel Core Ultra 7'},{label:'RAM',value:'16/32GB'},{label:'SSD',value:'512GB/1TB'},{label:'무게',value:'1.19kg'},{label:'배터리',value:'22시간'}]}
+            pros={['16인치 대화면에 1.19kg 초경량','22시간 업계 최장 배터리','MIL-STD 810H 내구성 인증','Thunderbolt 4 포트 2개']}
+            cons={['스피커 품질 아쉬움','GPU 성능 부족 (영상 편집 한계)']}
+            recommendation="매일 노트북을 가지고 다니는 학생. 16인치 대화면이면서 1.19kg에 불과해 어떤 가방에도 부담 없이 넣을 수 있습니다. 배터리가 22시간이라 충전기를 들고 다닐 필요도 없습니다."
+            productId="lg-gram-16"
+            reviewUrl="/review/lg-gram-16-2025/"
+          />
+
+          <ReviewCard
+            rank={3} name="Lenovo IdeaPad Slim 5 (16&quot;)" subtitle="80만원대 가성비의 왕"
+            badge="가성비 최고" badgeType="success" score={8.8}
+            specs={[{label:'CPU',value:'Ryzen 7 7730U'},{label:'RAM',value:'16GB'},{label:'SSD',value:'512GB'},{label:'무게',value:'1.89kg'},{label:'배터리',value:'12시간'}]}
+            pros={['80만원대 합리적 가격','Ryzen 7 + 16GB 넉넉한 성능','16인치 2.5K IPS 선명한 화면','풀사이즈 키보드 + 넘패드']}
+            cons={['1.89kg 다소 무거움','빌드 품질 프리미엄 대비 부족']}
+            recommendation="예산이 한정된 학생. 100만원 이하에서 이 정도 스펙을 갖춘 노트북은 드뭅니다. 무게가 다소 있지만, 성능 대비 가격이 압도적이라 책상에서 주로 사용한다면 최고의 선택입니다."
+            productId="lenovo-ideapad-slim5"
+          />
+
+          <ReviewCard
+            rank={4} name="Samsung Galaxy Book4 Pro" subtitle="AMOLED 디스플레이의 최강자"
+            score={9.0}
+            specs={[{label:'CPU',value:'Intel Core Ultra 7'},{label:'RAM',value:'16/32GB'},{label:'SSD',value:'512GB/1TB'},{label:'무게',value:'1.23kg'},{label:'배터리',value:'21시간'}]}
+            pros={['16인치 AMOLED 최고의 색감','1.23kg 경량 + 21시간 배터리','삼성 갤럭시 생태계 연동','AI 기능 탑재']}
+            cons={['높은 가격대','팬 소음 간헐적 발생']}
+            recommendation="디스플레이 품질을 최우선시하는 학생. 16인치 AMOLED 화면은 색감이 압도적이어서 디자인, 영상 전공 학생에게 특히 추천합니다."
+            productId="galaxy-book4-pro"
+          />
+
+          <ReviewCard
+            rank={5} name="ASUS Zenbook 14 OLED" subtitle="크리에이터를 위한 가성비 OLED"
+            score={8.9}
+            specs={[{label:'CPU',value:'Intel Core Ultra 5'},{label:'RAM',value:'16GB'},{label:'SSD',value:'512GB'},{label:'무게',value:'1.28kg'},{label:'배터리',value:'15시간'}]}
+            pros={['2.8K OLED 뛰어난 색재현율','1.28kg 경량 디자인','119만원 합리적 가격','NumberPad 2.0 터치패드']}
+            cons={['14인치 다소 작은 화면','8GB 모델 성능 제한']}
+            recommendation="디자인/영상 작업이 많지만 Galaxy Book4 Pro 예산이 부담되는 학생. 119만원에 2.8K OLED 화면과 뛰어난 색재현율을 제공합니다."
+            productId="asus-zenbook-14"
+          />
+
+          <ReviewCard
+            rank={6} name="HP Pavilion Aero 13" subtitle="1kg 미만 초경량 노트북"
+            score={8.5}
+            specs={[{label:'CPU',value:'Ryzen 7 7840U'},{label:'RAM',value:'16GB'},{label:'SSD',value:'512GB'},{label:'무게',value:'0.97kg'},{label:'배터리',value:'10.5시간'}]}
+            pros={['0.97kg 최경량','89만원 합리적 가격','Ryzen 7 충분한 성능','컴팩트한 13인치']}
+            cons={['작은 화면 (멀티태스킹 제한)','배터리 다소 짧음']}
+            recommendation="무게를 최우선시하는 학생. 0.97kg으로 이 리스트에서 가장 가벼우며, 89만원이라는 합리적 가격까지 갖췄습니다."
+            productId="hp-pavilion-aero"
+          />
+
+          <ReviewCard
+            rank={7} name="Acer Swift Go 14" subtitle="100만원 이하 OLED의 신선한 선택"
+            score={8.4}
+            specs={[{label:'CPU',value:'Intel Core Ultra 5'},{label:'RAM',value:'16GB'},{label:'SSD',value:'512GB'},{label:'무게',value:'1.25kg'},{label:'배터리',value:'13시간'}]}
+            pros={['99만원에 2.8K OLED','1.25kg 경량','Intel Ultra 5 신형 CPU','넓은 터치패드']}
+            cons={['스피커 품질 아쉬움','빌드 품질 보통']}
+            recommendation="100만원 이하에서 OLED 화면을 원하는 학생. 99만원에 2.8K OLED 패널을 탑재해 가격 대비 화면 품질이 뛰어납니다."
+            productId="acer-swift-go"
+          />
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+          <h2>대학생 노트북 구매 전 알아야 할 5가지</h2>
+          <FAQ items={faqItems} />
+          <div style="text-align:center; margin-top:32px;">
+            <a href="/guides/laptop-buying-guide/" class="btn btn-primary btn-lg">노트북 구매 가이드 전체 보기 &rarr;</a>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Sidebar -->
+      <Sidebar
+        toc={toc}
+        ctaProduct="macbook-air-m3"
+        ctaPrice="1,390,000원~"
+        ctaPriceNote="MacBook Air M3 | 쿠팡 기준"
+        sellers={sellers}
+      />
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .top-picks-inline {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px;
+  }
+  @media (max-width: 1024px) {
+    .top-picks-inline { grid-template-columns: 1fr; }
+  }
+</style>

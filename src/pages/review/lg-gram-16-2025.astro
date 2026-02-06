@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import FAQ from '../../components/FAQ.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+
+const toc = [
+  { href: '#summary', label: '한줄 요약' },
+  { href: '#specs', label: '스펙 요약' },
+  { href: '#pros-cons', label: '장점 / 단점' },
+  { href: '#detail', label: '상세 리뷰' },
+  { href: '#competitors', label: '경쟁 모델 비교' },
+  { href: '#verdict', label: '최종 결론' },
+];
+
+const sellers = [
+  { store: 'coupang', label: '쿠팡', price: '1,590,000원', productId: 'lg-gram-16' },
+  { store: 'naver', label: '네이버 쇼핑', price: '1,610,000원', productId: 'lg-gram-16' },
+  { store: '11st', label: '11번가', price: '1,599,000원', productId: 'lg-gram-16' },
+];
+
+const competitors = [
+  { name: 'LG 그램 16 (2025)', price: '159만원~', weight: '1.19kg', cpu: 'Intel Ultra 7', battery: '22시간', display: '16" WQXGA IPS', target: '휴대성 + 배터리', productId: 'lg-gram-16', isBest: true },
+  { name: 'MacBook Air M3', price: '139만원~', weight: '1.24kg', cpu: 'Apple M3', battery: '18시간', display: '13.6" Retina', target: '올라운더', productId: 'macbook-air-m3' },
+  { name: 'Galaxy Book4 Pro', price: '169만원~', weight: '1.23kg', cpu: 'Intel Ultra 7', battery: '21시간', display: '16" AMOLED', target: '디스플레이', productId: 'galaxy-book4-pro' },
+  { name: 'ASUS Zenbook 14 OLED', price: '119만원~', weight: '1.28kg', cpu: 'Intel Ultra 5', battery: '15시간', display: '14" 2.8K OLED', target: '가성비 OLED', productId: 'asus-zenbook-14' },
+];
+
+const faqItems = [
+  { question: 'LG 그램 16 2025는 코딩/개발에 적합한가요?', answer: '일반적인 웹 개발, Python, Java 등은 충분히 가능합니다. 다만 Docker를 여러 개 돌리거나 머신러닝 학습을 하려면 RAM 32GB 모델을 선택하시고, 그래도 GPU가 부족할 수 있어 외장 GPU를 고려하세요.' },
+  { question: '배터리가 정말 22시간 가나요?', answer: '제조사 공칭 기준입니다. <strong>실사용 기준으로는 약 13~16시간</strong> 정도입니다. 밝기 50%, 웹 브라우징 + 문서 작업 기준이며, 영상 편집 등 고부하 작업 시 8~10시간 정도 기대하시면 됩니다. 그래도 경쟁 모델 대비 확실히 깁니다.' },
+  { question: '그램 16과 그램 17 중 어떤 걸 사야 하나요?', answer: '화면 크기와 무게의 트레이드오프입니다. 그램 16(1.19kg)이 휴대성에서 확실히 유리하고, 그램 17(1.35kg)은 더 큰 화면이 필요할 때 선택하세요. 대학생이라면 16인치가 휴대성과 화면 크기의 최적 밸런스입니다.' },
+];
+---
+
+<BaseLayout
+  title="LG 그램 16 (2025) 실사용 리뷰 - 배터리와 휴대성은 최고? | HyunTech"
+  description="LG 그램 16 2025년형 실사용 리뷰. 1.19kg 초경량, 22시간 배터리의 진실. 실사용 장단점과 경쟁 모델 비교를 정리했습니다."
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href="/category/laptop/">노트북</a> <span class="sep">/</span>
+      <span>LG 그램 16 (2025) 리뷰</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-primary">제품 리뷰</span>
+      <h1>LG 그램 16 (2025) 실사용 리뷰 &ndash; 배터리와 휴대성은 최고?</h1>
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        <span>2025년 2월 3일</span>
+        <span class="divider">|</span>
+        <span>15분 읽기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+
+        <!-- 한줄 요약 -->
+        <section id="summary">
+          <div class="guide-tip">
+            <strong>한줄 요약:</strong>
+            <p>16인치 대화면에 1.19kg, 22시간 배터리. 휴대성과 배터리를 최우선시하는 대학생/직장인에게 가장 추천하는 노트북입니다. GPU 성능만 아쉬움.</p>
+          </div>
+        </section>
+
+        <!-- 스펙 요약 -->
+        <section id="specs">
+          <h2>스펙 요약</h2>
+          <div class="spec-box">
+            <div class="spec-box-header">
+              <h3>LG 그램 16 (2025) 주요 스펙</h3>
+              <div class="review-score-inline">9.2 / 10</div>
+            </div>
+            <div class="spec-box-body">
+              <div class="spec-row"><span class="label">CPU</span><span class="value">Intel Core Ultra 7 155H</span></div>
+              <div class="spec-row"><span class="label">RAM</span><span class="value">16GB / 32GB LPDDR5x</span></div>
+              <div class="spec-row"><span class="label">SSD</span><span class="value">512GB / 1TB NVMe</span></div>
+              <div class="spec-row"><span class="label">디스플레이</span><span class="value">16" WQXGA (2560x1600) IPS, 350nit</span></div>
+              <div class="spec-row"><span class="label">GPU</span><span class="value">Intel Arc (내장)</span></div>
+              <div class="spec-row"><span class="label">배터리</span><span class="value">90Wh (최대 22시간)</span></div>
+              <div class="spec-row"><span class="label">무게</span><span class="value">1.19kg</span></div>
+              <div class="spec-row"><span class="label">포트</span><span class="value">Thunderbolt 4 x2, USB-A x2, HDMI, microSD</span></div>
+              <div class="spec-row"><span class="label">OS</span><span class="value">Windows 11 Home</span></div>
+              <div class="spec-row"><span class="label">가격</span><span class="value">1,590,000원~</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 장점/단점 -->
+        <section id="pros-cons">
+          <h2>장점 & 단점</h2>
+          <div class="pros-cons-grid">
+            <div class="pros-box">
+              <h3>장점</h3>
+              <ul>
+                <li>&#10003; 16인치 대화면에 1.19kg 초경량 &ndash; 동급 최경량</li>
+                <li>&#10003; 90Wh 배터리로 실사용 13~16시간</li>
+                <li>&#10003; MIL-STD 810H 군용 내구성 인증</li>
+                <li>&#10003; Thunderbolt 4 x2 포함 풍부한 포트</li>
+                <li>&#10003; 16:10 비율 넓은 작업 영역</li>
+              </ul>
+            </div>
+            <div class="cons-box">
+              <h3>단점</h3>
+              <ul>
+                <li>&#10007; Intel Arc 내장 GPU &ndash; 영상 편집/게임 한계</li>
+                <li>&#10007; 스피커 품질 보통 (외부 스피커 필요)</li>
+                <li>&#10007; OLED 대비 디스플레이 색감 아쉬움</li>
+                <li>&#10007; 키보드 키감 호불호 갈림</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- 상세 리뷰 -->
+        <section id="detail">
+          <h2>상세 리뷰</h2>
+
+          <h3>디자인 & 휴대성</h3>
+          <p>LG 그램 16의 가장 큰 장점은 단연 <strong>무게</strong>입니다. 16인치 노트북이 1.19kg이라는 것은 현존하는 16인치 노트북 중 가장 가벼운 수준입니다. 마그네슘 합금 바디는 가벼우면서도 MIL-STD 810H 군용 내구성 인증을 받았습니다.</p>
+          <p>실제로 2주간 매일 가방에 넣고 다니며 사용해본 결과, 노트북을 들고 다닌다는 사실을 잊을 정도였습니다. 13인치 노트북과 비교해도 무게 차이를 거의 느끼지 못합니다.</p>
+
+          <h3>디스플레이</h3>
+          <p>16인치 WQXGA (2560x1600) IPS 패널은 16:10 비율로 문서 작업과 코딩 시 세로 공간이 넉넉합니다. 밝기는 350nit로 실내 사용에는 충분하지만, 야외 직사광선에서는 다소 부족할 수 있습니다.</p>
+          <p>sRGB 99% 색재현율로 일반적인 작업에는 충분하지만, Galaxy Book4 Pro의 AMOLED나 Zenbook의 OLED와 비교하면 색감과 명암비에서 차이가 납니다. 색 정확도가 중요한 디자인/영상 작업이라면 OLED 모델을 고려하세요.</p>
+
+          <h3>성능</h3>
+          <p>Intel Core Ultra 7 155H는 일상 작업, 문서 편집, 웹 브라우징, 코딩 등에서 매우 쾌적합니다. 16GB RAM과 함께 브라우저 탭 20개 이상 열어도 버벅임 없이 동작합니다.</p>
+          <p>다만 내장 GPU(Intel Arc)의 한계로 영상 편집이나 3D 작업에서는 아쉬움이 있습니다. 간단한 프리미어 프로 편집은 가능하지만, 4K 영상이나 애프터이펙트 작업은 렌더링 시간이 깁니다.</p>
+
+          <h3>배터리</h3>
+          <p><strong>90Wh 대용량 배터리</strong>는 이 노트북의 핵심 강점입니다. 제조사 공칭 22시간이며, 실사용 기준으로는:</p>
+          <ul>
+            <li>웹 브라우징 + 문서 작업: <strong>약 14~16시간</strong></li>
+            <li>코딩 (VS Code + 브라우저): <strong>약 12~14시간</strong></li>
+            <li>영상 시청: <strong>약 16~18시간</strong></li>
+            <li>영상 편집: <strong>약 6~8시간</strong></li>
+          </ul>
+          <p>대학 수업 하루를 충전 없이 넘기기에 충분합니다. 충전기를 가져가지 않아도 되는 자유로움은 상당합니다.</p>
+
+          <h3>키보드 & 트랙패드</h3>
+          <p>풀사이즈 키보드에 숫자 키패드가 포함되어 엑셀 작업 시 편리합니다. 키 트래블은 1.4mm로 얇은 노트북 치고는 양호하지만, ThinkPad 같은 키감을 기대하면 안 됩니다. 트랙패드는 크기와 반응성 모두 양호합니다.</p>
+        </section>
+
+        <!-- 경쟁 모델 비교 -->
+        <section id="competitors">
+          <h2>경쟁 모델 비교</h2>
+          <p>LG 그램 16과 가격/성격이 비슷한 경쟁 모델들과 비교했습니다.</p>
+          <ComparisonTable products={competitors} />
+
+          <div class="guide-tip" style="margin-top:24px;">
+            <strong>HyunTech 선택 가이드:</strong>
+            <p><strong>휴대성 + 배터리 최우선</strong>이면 LG 그램 16, <strong>올라운드 성능</strong>이면 MacBook Air M3, <strong>디스플레이 품질</strong>이면 Galaxy Book4 Pro, <strong>가성비 OLED</strong>이면 ASUS Zenbook 14를 추천합니다.</p>
+          </div>
+        </section>
+
+        <!-- 최종 결론 -->
+        <section id="verdict">
+          <h2>최종 결론</h2>
+          <p>LG 그램 16 (2025)은 <strong>"휴대성과 배터리"</strong>라는 두 가지 핵심 가치를 극한까지 끌어올린 노트북입니다. 16인치 대화면에 1.19kg, 22시간 배터리(실사용 14~16시간)는 매일 노트북을 들고 다니는 사람에게 최고의 경험을 제공합니다.</p>
+          <p>GPU 성능이 아쉽지만, 대학 과제, 코딩, 문서 작업, 웹 브라우징이 주 용도라면 이보다 더 좋은 선택은 없습니다. 디자인/영상 전공이 아니라면 가장 추천하는 대학생 노트북입니다.</p>
+
+          <div style="text-align:center; margin-top:32px; padding:32px; background:var(--bg-secondary); border-radius:var(--radius-xl);">
+            <p style="font-size:14px; color:var(--text-secondary); margin-bottom:8px;">HyunTech 점수</p>
+            <p style="font-size:48px; font-weight:800; color:var(--primary); margin-bottom:8px; line-height:1;">9.2<small style="font-size:20px;color:var(--text-light);"> / 10</small></p>
+            <p style="font-size:16px; font-weight:700; margin-bottom:24px;">강력 추천</p>
+            <a href="#" class="cta-btn" data-product="lg-gram-16" data-store="coupang" style="font-size:18px;padding:16px 40px;">쿠팡 최저가 보기</a>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" style="margin-top:40px;">
+          <h2>자주 묻는 질문</h2>
+          <FAQ items={faqItems} />
+        </section>
+
+      </div>
+
+      <Sidebar
+        toc={toc}
+        ctaProduct="lg-gram-16"
+        ctaPrice="1,590,000원~"
+        ctaPriceNote="LG 그램 16 (2025) | 쿠팡 기준"
+        sellers={sellers}
+      />
+    </div>
+  </div>
+
+  <!-- Mobile Floating CTA -->
+  <div class="floating-cta">
+    <div class="floating-cta-inner">
+      <div>
+        <div class="product-name">LG 그램 16 (2025)</div>
+        <div class="product-price">1,590,000원~</div>
+      </div>
+      <a href="#" class="cta-btn" data-product="lg-gram-16" style="padding:12px 20px;font-size:14px;">최저가 보기</a>
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .spec-box {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 32px;
+  }
+  .spec-box-header {
+    background: var(--text); color: #fff; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .spec-box-header h3 { font-size: 16px; font-weight: 700; }
+  .review-score-inline {
+    background: var(--primary); color: #fff; padding: 4px 12px;
+    border-radius: var(--radius); font-size: 16px; font-weight: 800;
+  }
+  .spec-box-body { padding: 0; }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px; border-bottom: 1px solid var(--border-light);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row .label { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+  .spec-row .value { font-size: 14px; font-weight: 600; }
+</style>

@@ -1,0 +1,117 @@
+---
+interface Props {
+  rank?: number;
+  name: string;
+  subtitle: string;
+  badge?: string;
+  badgeType?: 'best' | 'primary' | 'success';
+  score: number;
+  specs: { label: string; value: string }[];
+  pros: string[];
+  cons: string[];
+  recommendation: string;
+  productId: string;
+  store?: string;
+  reviewUrl?: string;
+  image?: string;
+}
+
+const {
+  rank, name, subtitle, badge, badgeType = 'primary',
+  score, specs, pros, cons, recommendation,
+  productId, store = 'coupang', reviewUrl, image
+} = Astro.props;
+---
+
+<div class="review-card">
+  <div class="review-card-image">
+    {image
+      ? <img src={image} alt={name} loading="lazy" width="280" height="200" />
+      : <div class="product-placeholder">&#128187;</div>
+    }
+  </div>
+  <div class="review-card-body">
+    <div class="review-card-header">
+      <div>
+        {badge && <span class={`badge badge-${badgeType}`} style="margin-bottom:8px;display:inline-block;">{badge}</span>}
+        <h3>{rank ? `${rank}. ` : ''}{name}</h3>
+        <span class="subtitle">{subtitle}</span>
+      </div>
+      <div class="review-score">{score} <small>/10</small></div>
+    </div>
+    <div class="review-card-specs">
+      {specs.map(s => (
+        <span class="spec"><strong>{s.label}:</strong> {s.value}</span>
+      ))}
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h4 style="color:#166534;">장점</h4>
+        <ul class="pick-pros">
+          {pros.map(p => <li>{p}</li>)}
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:#991b1b;">단점</h4>
+        <ul class="pick-pros pick-cons">
+          {cons.map(c => <li>{c}</li>)}
+        </ul>
+      </div>
+    </div>
+    <p class="rec-text"><strong>추천 대상:</strong> {recommendation}</p>
+    <div class="review-card-actions">
+      <a href="#" class="cta-btn" data-product={productId} data-store={store}>쿠팡 최저가 보기</a>
+      {reviewUrl && <a href={reviewUrl} class="btn btn-ghost">상세 리뷰 &rarr;</a>}
+    </div>
+  </div>
+</div>
+
+<style>
+  .review-card {
+    display: grid; grid-template-columns: 280px 1fr; gap: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    transition: all 0.3s ease; margin-bottom: 24px;
+  }
+  .review-card:hover { box-shadow: var(--shadow-lg); border-color: var(--primary); }
+  .review-card-image {
+    background: var(--bg-secondary); padding: 32px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .product-placeholder {
+    width: 200px; height: 150px; background: var(--border);
+    border-radius: var(--radius); display: flex; align-items: center;
+    justify-content: center; color: var(--text-light); font-size: 48px;
+  }
+  .review-card-body { padding: 28px 32px; }
+  .review-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .review-card-body h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); }
+  .review-score {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--primary); color: #fff;
+    padding: 6px 14px; border-radius: var(--radius);
+    font-size: 18px; font-weight: 800; flex-shrink: 0;
+  }
+  .review-score small { font-size: 12px; font-weight: 500; opacity: 0.8; }
+  .review-card-specs {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin: 16px 0; padding: 16px 0;
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
+  }
+  .spec { font-size: 13px; color: var(--text-secondary); }
+  .spec strong { color: var(--text); font-weight: 600; }
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .pros-cons h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .pick-pros { display: flex; flex-direction: column; gap: 4px; }
+  .pick-pros li { font-size: 13px; display: flex; gap: 6px; list-style: none; }
+  .pick-pros li::before { content: '\2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+  .pick-cons li::before { content: '\2715'; color: var(--danger); font-weight: 700; }
+  .rec-text { font-size: 14px; color: var(--text-secondary); margin: 12px 0; }
+  .review-card-actions { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
+
+  @media (max-width: 768px) {
+    .review-card { grid-template-columns: 1fr; }
+    .pros-cons { grid-template-columns: 1fr; }
+  }
+</style>

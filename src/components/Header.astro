@@ -1,0 +1,101 @@
+---
+const currentPath = Astro.url.pathname;
+const navItems = [
+  { href: '/category/laptop/', label: '노트북' },
+  { href: '#', label: '모니터' },
+  { href: '#', label: '태블릿' },
+  { href: '#', label: '오디오' },
+  { href: '/guides/laptop-buying-guide/', label: '구매가이드' },
+];
+---
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Hyun<span>Tech</span>
+    </a>
+    <nav class="nav" id="mainNav">
+      {navItems.map(item => (
+        <a href={item.href} class={currentPath.startsWith(item.href) && item.href !== '#' ? 'active' : ''}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="trust-bar">
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    실사용 기반 리뷰
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    2025년 2월 업데이트
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    독립적 평가 기준
+  </div>
+</div>
+
+<style>
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: var(--max-width); margin: 0 auto; padding: 0 20px; height: 64px;
+  }
+  .logo {
+    font-size: 22px; font-weight: 800; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo span { color: var(--primary); }
+  .nav { display: flex; align-items: center; gap: 32px; }
+  .nav a {
+    color: var(--text-secondary); font-size: 15px; font-weight: 500;
+    position: relative; padding: 4px 0;
+  }
+  .nav a:hover, .nav a.active { color: var(--text); }
+  .nav a.active::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 2px; background: var(--primary); border-radius: 1px;
+  }
+  .mobile-menu-btn {
+    display: none; background: none; border: none; cursor: pointer;
+    padding: 8px; color: var(--text);
+  }
+  .mobile-menu-btn svg { width: 24px; height: 24px; }
+  .trust-bar {
+    display: flex; align-items: center; justify-content: center; gap: 32px;
+    padding: 16px 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .trust-item { display: flex; align-items: center; gap: 6px; }
+  .trust-item svg { width: 16px; height: 16px; color: var(--success); }
+
+  @media (max-width: 768px) {
+    .nav { display: none; }
+    .nav.open {
+      display: flex; flex-direction: column; position: absolute;
+      top: 64px; left: 0; right: 0; background: var(--bg);
+      padding: 20px; gap: 16px; border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+    .mobile-menu-btn { display: block; }
+    .trust-bar { flex-wrap: wrap; gap: 16px; }
+  }
+</style>
+
+<script>
+  document.getElementById('menuBtn')?.addEventListener('click', () => {
+    document.getElementById('mainNav')?.classList.toggle('open');
+  });
+</script>

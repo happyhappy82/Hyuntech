@@ -1,0 +1,97 @@
+---
+interface Props {
+  rank?: number;
+  name: string;
+  subtitle: string;
+  badge?: string;
+  badgeType?: 'best' | 'primary' | 'success' | 'accent';
+  summary?: string;
+  pros: string[];
+  price: string;
+  productId: string;
+  store?: string;
+  reviewUrl?: string;
+  featured?: boolean;
+  image?: string;
+}
+
+const {
+  rank, name, subtitle, badge, badgeType = 'primary',
+  summary, pros, price, productId, store = 'coupang',
+  reviewUrl, featured = false, image
+} = Astro.props;
+
+const badgeClass = `badge badge-${badgeType}`;
+---
+
+<div class={`pick-card ${featured ? 'featured' : ''} animate-in`}>
+  {rank && <span class="pick-rank">{rank}</span>}
+  <div class="pick-image">
+    {image
+      ? <img src={image} alt={name} loading="lazy" width="280" height="200" />
+      : <div class="product-placeholder">&#128187;</div>
+    }
+  </div>
+  <div class="pick-body">
+    {badge && <span class={badgeClass}>{badge}</span>}
+    <h3>{name}</h3>
+    <p class="pick-subtitle">{subtitle}</p>
+    {summary && <p class="pick-summary">{summary}</p>}
+    <ul class="pick-pros">
+      {pros.map(pro => <li>{pro}</li>)}
+    </ul>
+    <div class="pick-price">{price} <small>~</small></div>
+    <div class="pick-actions">
+      <a href="#" class="cta-btn" data-product={productId} data-store={store}>최저가 보기</a>
+      {reviewUrl && <a href={reviewUrl} class="btn-ghost btn">리뷰 보기</a>}
+    </div>
+  </div>
+</div>
+
+<style>
+  .pick-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    transition: all 0.3s ease; position: relative;
+  }
+  .pick-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); border-color: var(--primary); }
+  .pick-card.featured { border: 2px solid var(--accent); }
+  .pick-card.featured::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--accent), #f97316);
+  }
+  .pick-rank {
+    position: absolute; top: 16px; left: 16px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+  .pick-card.featured .pick-rank { background: var(--accent); }
+  .pick-image {
+    background: var(--bg-secondary); padding: 32px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 200px;
+  }
+  .product-placeholder {
+    width: 160px; height: 120px; background: var(--border);
+    border-radius: var(--radius); display: flex; align-items: center;
+    justify-content: center; color: var(--text-light); font-size: 40px;
+  }
+  .pick-body { padding: 24px; }
+  .pick-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .pick-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+  .pick-summary { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+  .pick-pros { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .pick-pros li { font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+  .pick-pros li::before { content: '\2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+  .pick-price { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+  .pick-price small { font-size: 13px; font-weight: 500; color: var(--text-light); }
+  .pick-actions { display: flex; gap: 8px; }
+  .pick-actions .cta-btn { flex: 1; font-size: 14px; padding: 12px 16px; }
+  .pick-actions .btn-ghost { flex: 0 0 auto; padding: 12px 16px; font-size: 14px; }
+
+  @media (max-width: 768px) {
+    .pick-actions { flex-direction: column; }
+  }
+</style>

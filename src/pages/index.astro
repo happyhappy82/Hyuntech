@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+
+const comparisonProducts = [
+  { name: 'MacBook Air M3', price: '139만원~', weight: '1.24kg', cpu: 'Apple M3', battery: '18시간', display: '13.6" Liquid Retina', target: '올라운더', productId: 'macbook-air-m3', isBest: true },
+  { name: 'LG 그램 16 (2025)', price: '159만원~', weight: '1.19kg', cpu: 'Intel Ultra 7', battery: '22시간', display: '16" WQXGA IPS', target: '휴대성 중시', productId: 'lg-gram-16' },
+  { name: 'Lenovo IdeaPad Slim 5', price: '84.9만원~', weight: '1.89kg', cpu: 'Ryzen 7 7730U', battery: '12시간', display: '16" 2.5K IPS', target: '가성비', productId: 'lenovo-ideapad-slim5' },
+  { name: 'Galaxy Book4 Pro', price: '169만원~', weight: '1.23kg', cpu: 'Intel Ultra 7', battery: '21시간', display: '16" AMOLED', target: '디스플레이', productId: 'galaxy-book4-pro' },
+  { name: 'ASUS Zenbook 14 OLED', price: '119만원~', weight: '1.28kg', cpu: 'Intel Ultra 5', battery: '15시간', display: '14" 2.8K OLED', target: '영상/디자인', productId: 'asus-zenbook-14' },
+];
+---
+
+<BaseLayout title="HyunTech - 실사용 기반 전자제품 추천 & 비교">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-label">
+          <span class="dot"></span>
+          2025년 2월 최신 업데이트
+        </div>
+        <h1>당신에게 <em>딱 맞는</em><br>전자제품을 찾아드립니다</h1>
+        <p>실사용 평가와 전문가 리뷰를 기반으로, 용도별 최적의 제품을 추천합니다. 수십 시간의 테스트와 비교 분석으로 선별한 추천 리스트를 확인하세요.</p>
+        <div class="hero-actions">
+          <a href="/category/laptop/" class="btn btn-accent btn-lg">노트북 추천 보기</a>
+          <a href="/guides/laptop-buying-guide/" class="btn btn-outline btn-lg">구매 가이드 읽기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP 3 Picks -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-accent">EDITOR'S PICK</span>
+        <h2>2025년 최고의 노트북 TOP 3</h2>
+        <p>수십 시간의 실사용 테스트를 거쳐 선정한 올해 최고의 노트북입니다.</p>
+      </div>
+      <div class="top-picks">
+        <ProductCard
+          rank={1} featured
+          name="MacBook Air M3"
+          subtitle="최고의 올라운드 노트북"
+          badge="최고 추천" badgeType="best"
+          summary="뛰어난 성능, 18시간 배터리, 1.24kg 경량 바디. 대학생부터 직장인까지 모두에게 추천."
+          pros={['M3 칩 압도적 성능/전력 효율', '18시간 배터리 라이프', '뛰어난 Liquid Retina 디스플레이']}
+          price="1,390,000원"
+          productId="macbook-air-m3"
+          reviewUrl="/review/macbook-air-m3/"
+        />
+        <ProductCard
+          rank={2}
+          name="LG 그램 16 (2025)"
+          subtitle="휴대성과 배터리의 왕"
+          badge="학생 추천" badgeType="primary"
+          summary="1.19kg 초경량에 최대 22시간 배터리. 대학생과 출장이 잦은 직장인에게 최적."
+          pros={['16인치 대화면에 1.19kg 초경량', '22시간 압도적 배터리', 'MIL-STD 810H 내구성 인증']}
+          price="1,590,000원"
+          productId="lg-gram-16"
+          reviewUrl="/review/lg-gram-16-2025/"
+        />
+        <ProductCard
+          rank={3}
+          name="Lenovo IdeaPad Slim 5"
+          subtitle="가격 대비 최고의 선택"
+          badge="가성비 추천" badgeType="success"
+          summary="80만원대에 Ryzen 7, 16GB RAM, 512GB SSD. 가성비를 최우선으로 한다면 이 제품."
+          pros={['80만원대 합리적 가격', 'Ryzen 7 + 16GB 탄탄한 성능', '2.5K IPS 선명한 디스플레이']}
+          price="849,000원"
+          productId="lenovo-ideapad-slim5"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2>카테고리별 추천</h2>
+        <p>관심 있는 제품군을 선택하세요</p>
+      </div>
+      <div class="category-grid">
+        <CategoryCard href="/category/laptop/" emoji="&#128187;" title="노트북" description="용도별 최적의 노트북 추천" count="15개 리뷰 | 5개 비교글" />
+        <CategoryCard href="#" emoji="&#128424;" title="모니터" description="업무용/게이밍 모니터 추천" count="12개 리뷰 | 4개 비교글" />
+        <CategoryCard href="#" emoji="&#128241;" title="태블릿" description="아이패드부터 안드로이드까지" count="8개 리뷰 | 3개 비교글" />
+        <CategoryCard href="#" emoji="&#127911;" title="오디오" description="이어폰, 헤드폰, 스피커" count="10개 리뷰 | 3개 비교글" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary">COMPARISON</span>
+        <h2>대학생 노트북 한눈에 비교</h2>
+        <p>2025년 대학생에게 가장 추천하는 노트북 5종의 핵심 스펙을 비교했습니다.</p>
+      </div>
+      <ComparisonTable products={comparisonProducts} />
+      <div style="text-align:center; margin-top:24px;">
+        <a href="/category/laptop/" class="btn btn-ghost">전체 비교표 보기 &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Articles -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2>인기 콘텐츠</h2>
+        <p>독자들이 가장 많이 읽는 추천 & 비교 글입니다.</p>
+      </div>
+      <div class="popular-grid">
+        <a href="/category/laptop/" class="popular-card">
+          <div class="popular-card-image">&#128187;</div>
+          <div class="popular-card-body">
+            <div class="tag">노트북 추천</div>
+            <h3>2025년 대학생용 노트북 추천 TOP 7 (실사용 기준)</h3>
+            <p>과제, 영상 편집, 코딩까지 가능한 모델 중심으로 선정했습니다.</p>
+            <div class="meta">2025.02.01 업데이트 &middot; 12분 읽기</div>
+          </div>
+        </a>
+        <a href="#" class="popular-card">
+          <div class="popular-card-image">&#128424;</div>
+          <div class="popular-card-body">
+            <div class="tag">모니터 비교</div>
+            <h3>개발자용 모니터 추천 2025 - 27인치 vs 32인치</h3>
+            <p>코딩과 멀티태스킹에 최적화된 모니터를 비교했습니다.</p>
+            <div class="meta">2025.01.28 업데이트 &middot; 10분 읽기</div>
+          </div>
+        </a>
+        <a href="#" class="popular-card">
+          <div class="popular-card-image">&#127911;</div>
+          <div class="popular-card-body">
+            <div class="tag">오디오 추천</div>
+            <h3>10만원대 노이즈캔슬링 이어폰 TOP 5</h3>
+            <p>가성비 좋은 ANC 이어폰을 실사용 기준으로 선별했습니다.</p>
+            <div class="meta">2025.01.25 업데이트 &middot; 8분 읽기</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="section">
+    <div class="container">
+      <div class="newsletter">
+        <h2>새로운 추천 & 비교글 알림 받기</h2>
+        <p>신제품 출시와 최신 추천 업데이트를 이메일로 받아보세요.</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="이메일 주소를 입력하세요" required>
+          <button type="submit" class="btn btn-accent btn-lg">구독하기</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    color: #fff; padding: 80px 0 60px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; right: -20%;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 500;
+    color: rgba(255,255,255,0.9); margin-bottom: 20px;
+  }
+  .hero-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .hero h1 {
+    font-size: 44px; font-weight: 800; line-height: 1.2;
+    margin-bottom: 16px; letter-spacing: -0.02em;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { font-size: 18px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 32px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Top Picks Grid */
+  .top-picks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  /* Category Grid */
+  .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+  /* Popular Grid */
+  .popular-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .popular-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden; transition: all 0.3s ease; display: block;
+  }
+  .popular-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .popular-card-image {
+    height: 180px; background: var(--bg-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; color: var(--text-light);
+  }
+  .popular-card-body { padding: 20px; }
+  .popular-card-body .tag {
+    font-size: 12px; font-weight: 600; color: var(--primary);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .popular-card-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; color: var(--text); }
+  .popular-card-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+  .popular-card-body .meta { font-size: 12px; color: var(--text-light); margin-top: 12px; }
+
+  @media (max-width: 1024px) {
+    .top-picks { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 16px; }
+    .hero-actions { flex-direction: column; }
+    .hero-actions .btn { width: 100%; }
+    .top-picks { grid-template-columns: 1fr; }
+    .category-grid { grid-template-columns: repeat(2, 1fr); }
+    .popular-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 26px; }
+    .category-grid { grid-template-columns: 1fr; }
+  }
+</style>

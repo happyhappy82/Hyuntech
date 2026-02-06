@@ -1,0 +1,45 @@
+---
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: FAQItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="faq-list">
+  {items.map(item => (
+    <details class="faq-item">
+      <summary class="faq-question">
+        {item.question}
+        <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="faq-answer-inner" set:html={item.answer} />
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq-list { display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .faq-question {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; cursor: pointer; font-size: 16px;
+    font-weight: 600; list-style: none; color: var(--text);
+    transition: background var(--transition);
+  }
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question:hover { background: var(--bg-secondary); }
+  .arrow { color: var(--text-light); flex-shrink: 0; transition: transform 0.3s ease; }
+  .faq-item[open] .arrow { transform: rotate(180deg); }
+  .faq-answer-inner {
+    padding: 0 24px 20px; font-size: 15px; color: var(--text-secondary); line-height: 1.7;
+  }
+</style>

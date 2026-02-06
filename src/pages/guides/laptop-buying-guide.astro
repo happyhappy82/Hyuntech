@@ -1,0 +1,286 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import FAQ from '../../components/FAQ.astro';
+
+const toc = [
+  { href: '#purpose', label: '1. 용도 파악하기' },
+  { href: '#cpu', label: '2. CPU 선택 가이드' },
+  { href: '#ram', label: '3. RAM 선택 가이드' },
+  { href: '#storage', label: '4. 저장장치 선택' },
+  { href: '#display', label: '5. 디스플레이 선택' },
+  { href: '#battery', label: '6. 배터리 기준' },
+  { href: '#weight', label: '7. 무게 기준' },
+  { href: '#checklist', label: '최종 체크리스트' },
+];
+
+const faqItems = [
+  { question: '노트북은 오프라인과 온라인 중 어디서 사는 게 좋나요?', answer: '<strong>온라인 구매가 대부분 저렴합니다.</strong> 쿠팡, 네이버 쇼핑 등에서 최저가를 비교한 후 구매하세요. 다만 키보드 키감, 무게감 등을 직접 확인하고 싶다면 오프라인 매장에서 체험 후 온라인으로 구매하는 것도 좋은 방법입니다.' },
+  { question: '학생 할인은 어떻게 받나요?', answer: 'Apple은 Education Store에서 할인을 제공합니다. 삼성, LG도 대학생 인증 시 할인 혜택이 있습니다. 구매 전 각 브랜드의 교육 할인 페이지를 반드시 확인하세요.' },
+  { question: '중고 노트북도 괜찮은가요?', answer: '예산이 매우 한정적이라면 고려할 수 있지만, <strong>배터리 수명과 보증이 문제입니다.</strong> 중고를 사려면 배터리 사이클 수를 반드시 확인하고, 가능하면 인증 리퍼비시(Apple Refurbished 등)를 추천합니다.' },
+  { question: '노트북 보호 필름이나 케이스는 필요한가요?', answer: '화면 보호 필름은 선택사항이지만, <strong>파우치/케이스는 강력 추천합니다.</strong> 가방 안에서 다른 물건과 부딪혀 스크래치가 나기 쉽습니다. 특히 알루미늄/마그네슘 바디 노트북은 찍힘에 취약합니다.' },
+];
+---
+
+<BaseLayout
+  title="2025 노트북 구매 가이드 - 구매 전 알아야 할 모든 것 | HyunTech"
+  description="노트북 구매 전 반드시 알아야 할 CPU, RAM, SSD, 디스플레이, 배터리 선택 기준을 쉽게 정리했습니다."
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href="/guides/laptop-buying-guide/">구매 가이드</a> <span class="sep">/</span>
+      <span>노트북 구매 가이드</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-accent">구매 가이드</span>
+      <h1>2025 노트북 구매 가이드 &ndash; 구매 전 알아야 할 모든 것</h1>
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        <span>2025년 1월 30일</span>
+        <span class="divider">|</span>
+        <span>20분 읽기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+
+        <p>노트북 구매는 스펙 용어부터 어렵습니다. CPU, RAM, SSD, 해상도... 이 가이드에서는 <strong>어려운 스펙을 쉬운 말로</strong> 풀어서, 자신에게 맞는 노트북을 고르는 기준을 알려드립니다.</p>
+
+        <!-- 1. 용도 -->
+        <section id="purpose">
+          <h2>1. 먼저 용도를 파악하세요</h2>
+          <p>노트북 선택의 출발점은 <strong>"무엇에 쓸 것인가"</strong>입니다. 용도에 따라 필요한 스펙이 완전히 다릅니다.</p>
+
+          <div class="use-case-grid">
+            <div class="use-case-item">
+              <h4>&#128218; 문서/웹 작업</h4>
+              <p>보고서, 이메일, 웹서핑</p>
+              <span class="spec-need">i5/Ryzen 5, 8~16GB, SSD 256GB</span>
+              <span class="budget">60~100만원</span>
+            </div>
+            <div class="use-case-item">
+              <h4>&#128187; 코딩/개발</h4>
+              <p>VS Code, Docker, 터미널</p>
+              <span class="spec-need">i7/Ryzen 7, 16~32GB, SSD 512GB</span>
+              <span class="budget">100~180만원</span>
+            </div>
+            <div class="use-case-item">
+              <h4>&#127916; 영상/디자인</h4>
+              <p>프리미어, 포토샵, 피그마</p>
+              <span class="spec-need">i7/M3+, 16~32GB, OLED, 외장GPU</span>
+              <span class="budget">130~250만원</span>
+            </div>
+            <div class="use-case-item">
+              <h4>&#127918; 게이밍</h4>
+              <p>AAA 게임, 스팀</p>
+              <span class="spec-need">i7/Ryzen 7, 16GB+, RTX 4060+</span>
+              <span class="budget">150~300만원</span>
+            </div>
+          </div>
+
+          <div class="guide-tip">
+            <strong>TIP:</strong>
+            <p>용도가 여러 개라면, 가장 무거운 작업 기준으로 스펙을 맞추세요. 예를 들어 문서 작업 + 가끔 영상 편집이라면, 영상 편집 기준으로 선택하면 됩니다.</p>
+          </div>
+        </section>
+
+        <!-- 2. CPU -->
+        <section id="cpu">
+          <h2>2. CPU 선택 가이드</h2>
+          <p>CPU는 노트북의 <strong>"두뇌"</strong>입니다. 모든 작업의 속도를 결정합니다.</p>
+
+          <h3>2025년 주요 CPU 라인업</h3>
+          <ul>
+            <li><strong>Intel Core Ultra 5/7/9:</strong> 인텔 최신 세대. AI 작업 최적화. 대부분의 윈도우 노트북에 탑재.</li>
+            <li><strong>AMD Ryzen 7/9 (8000 시리즈):</strong> 인텔과 대등한 성능. 가성비 모델에 많이 사용.</li>
+            <li><strong>Apple M3/M3 Pro/M3 Max:</strong> Mac 전용. 성능 대비 전력 효율이 압도적.</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>결론:</strong>
+            <p>일반 사용은 <strong>i5/Ryzen 5/M3</strong>이면 충분합니다. 코딩, 영상 편집, 멀티태스킹이 많다면 <strong>i7/Ryzen 7/M3 Pro</strong>를 추천합니다.</p>
+          </div>
+        </section>
+
+        <!-- 3. RAM -->
+        <section id="ram">
+          <h2>3. RAM 선택 가이드</h2>
+          <p>RAM은 <strong>"작업 공간의 크기"</strong>입니다. RAM이 클수록 동시에 더 많은 작업을 할 수 있습니다.</p>
+
+          <ul>
+            <li><strong>8GB:</strong> 최소 사양. 웹 브라우징 + 문서 작업 수준. 2025년에는 부족한 경우가 많음.</li>
+            <li><strong>16GB:</strong> 대부분의 사용자에게 충분. 코딩, 가벼운 영상 편집 가능. <strong>가장 추천하는 용량.</strong></li>
+            <li><strong>32GB:</strong> 전문 영상 편집, 3D 작업, 가상 머신 사용자용.</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>중요:</strong>
+            <p>최근 노트북 대부분은 <strong>RAM이 메인보드에 납땜</strong>되어 있어 나중에 업그레이드할 수 없습니다. 처음 살 때 넉넉하게 선택하세요. 2025년 기준 <strong>16GB를 최소 권장</strong>합니다.</p>
+          </div>
+        </section>
+
+        <!-- 4. Storage -->
+        <section id="storage">
+          <h2>4. 저장장치 (SSD) 선택</h2>
+          <p>SSD는 <strong>"서랍장 크기"</strong>입니다. 파일, 프로그램, 운영체제 모두 여기에 저장됩니다.</p>
+
+          <ul>
+            <li><strong>256GB:</strong> OS와 필수 앱만으로 절반 차지. 비추천.</li>
+            <li><strong>512GB:</strong> 일반 사용자 기준 적정. <strong>가장 추천.</strong></li>
+            <li><strong>1TB:</strong> 영상/사진 작업, 게임 많이 설치하는 경우.</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>TIP:</strong>
+            <p>클라우드 스토리지(구글 드라이브, OneDrive 등)를 적극 활용하면 512GB로도 충분합니다. 하지만 인터넷 없이도 파일에 접근해야 한다면 1TB를 고려하세요.</p>
+          </div>
+        </section>
+
+        <!-- 5. Display -->
+        <section id="display">
+          <h2>5. 디스플레이 선택 가이드</h2>
+
+          <h3>크기</h3>
+          <ul>
+            <li><strong>13~14인치:</strong> 최고의 휴대성. 가벼움 중시.</li>
+            <li><strong>15~16인치:</strong> 작업 효율과 휴대성의 밸런스. <strong>가장 인기.</strong></li>
+            <li><strong>17인치:</strong> 큰 화면. 거의 데스크탑 대용.</li>
+          </ul>
+
+          <h3>패널 종류</h3>
+          <ul>
+            <li><strong>IPS:</strong> 가장 보편적. 색감 양호, 가격 합리적.</li>
+            <li><strong>OLED/AMOLED:</strong> 완벽한 블랙, 뛰어난 색감. 디자인/영상 작업에 최적. 다만 번인 가능성.</li>
+          </ul>
+
+          <h3>해상도</h3>
+          <ul>
+            <li><strong>FHD (1920x1080):</strong> 기본. 일반 작업 충분.</li>
+            <li><strong>2K/2.5K (2560x1440~1600):</strong> 선명한 텍스트. 코딩/문서 작업에 좋음.</li>
+            <li><strong>4K (3840x2160):</strong> 최고 선명도. 배터리 소모 큼.</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>결론:</strong>
+            <p>일반 학생은 <strong>15~16인치 IPS FHD~2.5K</strong>면 충분합니다. 디자인/영상 전공이면 <strong>OLED + 2.8K 이상</strong>을 추천합니다.</p>
+          </div>
+        </section>
+
+        <!-- 6. Battery -->
+        <section id="battery">
+          <h2>6. 배터리 기준</h2>
+          <p>제조사가 말하는 배터리 시간은 <strong>항상 실제보다 높게</strong> 표기됩니다. 실사용 기준으로는 공칭의 60~70% 수준으로 보세요.</p>
+
+          <ul>
+            <li><strong>10시간 이하 (공칭):</strong> 외출 시 충전기 필수</li>
+            <li><strong>10~15시간:</strong> 반나절 사용 가능</li>
+            <li><strong>15~20시간:</strong> 하루 종일 사용 가능 (추천)</li>
+            <li><strong>20시간 이상:</strong> 충전 없이 이틀도 가능</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>TIP:</strong>
+            <p>배터리 Wh(와트시) 수치를 확인하세요. <strong>60Wh 이상</strong>이면 괜찮고, <strong>70Wh 이상</strong>이면 좋습니다. LG 그램 16은 90Wh로 업계 최대 수준입니다.</p>
+          </div>
+        </section>
+
+        <!-- 7. Weight -->
+        <section id="weight">
+          <h2>7. 무게 기준</h2>
+          <ul>
+            <li><strong>1kg 미만:</strong> 초경량. 존재감 없이 가벼움.</li>
+            <li><strong>1~1.3kg:</strong> 매일 들고 다니기 편함. <strong>추천 범위.</strong></li>
+            <li><strong>1.3~1.6kg:</strong> 적당한 수준. 큰 부담 없음.</li>
+            <li><strong>1.6kg 이상:</strong> 매일 이동하기엔 무거울 수 있음.</li>
+          </ul>
+
+          <div class="guide-tip">
+            <strong>주의:</strong>
+            <p>충전기 무게도 고려하세요! 노트북이 1.2kg이어도 충전기가 300g이면 실제 휴대 무게는 1.5kg입니다. USB-C PD 충전을 지원하면 가벼운 서드파티 충전기를 사용할 수 있습니다.</p>
+          </div>
+        </section>
+
+        <!-- Checklist -->
+        <section id="checklist">
+          <h2>최종 체크리스트</h2>
+          <p>노트북 구매 전 아래 항목을 하나씩 확인하세요.</p>
+
+          <div class="checklist-box">
+            <label><input type="checkbox"> 주 사용 용도를 명확히 정했는가?</label>
+            <label><input type="checkbox"> CPU 등급이 용도에 맞는가? (i5/Ryzen 5 이상)</label>
+            <label><input type="checkbox"> RAM이 16GB 이상인가?</label>
+            <label><input type="checkbox"> SSD가 512GB 이상인가?</label>
+            <label><input type="checkbox"> 디스플레이 크기/해상도가 적합한가?</label>
+            <label><input type="checkbox"> 배터리가 12시간(공칭) 이상인가?</label>
+            <label><input type="checkbox"> 무게가 허용 범위 내인가?</label>
+            <label><input type="checkbox"> 필요한 포트가 있는가? (USB-C, HDMI 등)</label>
+            <label><input type="checkbox"> 예산 범위 내인가?</label>
+            <label><input type="checkbox"> 교육 할인/쿠폰을 확인했는가?</label>
+          </div>
+
+          <div style="text-align:center; margin-top:32px;">
+            <p style="font-size:16px; font-weight:600; margin-bottom:16px;">체크리스트를 다 확인했다면, 추천 리스트를 확인하세요!</p>
+            <a href="/category/laptop/" class="cta-btn" style="font-size:18px;padding:16px 40px;">2025 노트북 추천 TOP 7 보기</a>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" style="margin-top:40px;">
+          <h2>자주 묻는 질문</h2>
+          <FAQ items={faqItems} />
+        </section>
+
+      </div>
+
+      <Sidebar toc={toc} />
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .use-case-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0;
+  }
+  .use-case-item {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+  }
+  .use-case-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .use-case-item p { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+  .spec-need {
+    display: block; font-size: 12px; color: var(--text-secondary);
+    background: var(--bg-card); padding: 6px 10px; border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+  .budget {
+    display: inline-block; font-size: 14px; font-weight: 700; color: var(--primary);
+  }
+
+  .checklist-box {
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .checklist-box label {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 15px; cursor: pointer; padding: 8px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .checklist-box label:last-child { border-bottom: none; }
+  .checklist-box input[type="checkbox"] {
+    width: 20px; height: 20px; accent-color: var(--primary);
+  }
+
+  @media (max-width: 768px) {
+    .use-case-grid { grid-template-columns: 1fr; }
+  }
+</style>

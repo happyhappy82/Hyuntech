@@ -1,0 +1,100 @@
+---
+interface TocItem {
+  href: string;
+  label: string;
+}
+
+interface SellerLink {
+  store: string;
+  label: string;
+  price: string;
+  productId: string;
+}
+
+interface Props {
+  toc?: TocItem[];
+  ctaProduct?: string;
+  ctaPrice?: string;
+  ctaStore?: string;
+  ctaPriceNote?: string;
+  sellers?: SellerLink[];
+}
+
+const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers } = Astro.props;
+---
+
+<aside class="sidebar">
+  {toc && toc.length > 0 && (
+    <div class="sidebar-box sidebar-toc">
+      <h3>목차</h3>
+      <ul>
+        {toc.map(item => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {ctaProduct && (
+    <div class="sidebar-box sidebar-cta">
+      <h3>오늘의 최저가</h3>
+      <div class="price">{ctaPrice}</div>
+      {ctaPriceNote && <div class="price-note">{ctaPriceNote}</div>}
+      <a href="#" class="cta-btn" data-product={ctaProduct} data-store={ctaStore} style="width:100%;margin-bottom:8px;">쿠팡 최저가 보기</a>
+      {sellers && sellers.length > 0 && (
+        <div class="seller-links">
+          {sellers.map(s => (
+            <a href="#" class="seller-link" data-product={s.productId} data-store={s.store}>
+              <span>{s.label}</span>
+              <span class="price-tag">{s.price}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+</aside>
+
+<style>
+  .sidebar { position: sticky; top: 84px; }
+  .sidebar-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px;
+  }
+  .sidebar-box h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border-light);
+  }
+  .sidebar-toc ul { display: flex; flex-direction: column; gap: 8px; }
+  .sidebar-toc li a {
+    font-size: 14px; color: var(--text-secondary); display: block;
+    padding: 6px 12px; border-left: 2px solid transparent;
+    border-radius: 0 var(--radius) var(--radius) 0; transition: all var(--transition);
+  }
+  .sidebar-toc li a:hover {
+    color: var(--primary); background: var(--primary-light); border-left-color: var(--primary);
+  }
+  .sidebar-cta {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff; border: none;
+  }
+  .sidebar-cta h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.1); }
+  .price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .price-note { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+  .seller-links { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .seller-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; background: rgba(255,255,255,0.08);
+    border-radius: var(--radius); font-size: 14px; color: rgba(255,255,255,0.9);
+    transition: background var(--transition);
+  }
+  .seller-link:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .price-tag { font-weight: 700; color: var(--accent); }
+
+  @media (max-width: 1024px) {
+    .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { grid-template-columns: 1fr; }
+  }
+</style>
