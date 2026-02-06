@@ -75,6 +75,10 @@ const { products } = Astro.props;
   .comparison-table tbody tr:last-child td { border-bottom: none; }
   .highlight-row { background: #fffbeb; border-left: 3px solid var(--accent); }
   .highlight-row:hover { background: #fef9e7 !important; }
+  :global(html.dark) .highlight-row { background: rgba(251,191,36,0.12); }
+  :global(html.dark) .highlight-row:hover { background: rgba(251,191,36,0.18) !important; }
+  :global(html.dark) .highlight-row td { color: #fef3c7; }
+  :global(html.dark) .highlight-row strong { color: #fde68a; }
   .product-cell { display: flex; align-items: center; gap: 12px; font-weight: 600; white-space: nowrap; }
   .product-thumb {
     width: 48px; height: 48px; background: var(--bg-secondary);

@@ -29,6 +29,31 @@
   --transition: 0.2s ease;
 }
 
+/* ===== DARK MODE ===== */
+html.dark {
+  --primary: #3b82f6;
+  --primary-dark: #60a5fa;
+  --primary-light: rgba(59,130,246,0.15);
+  --accent: #fbbf24;
+  --accent-dark: #f59e0b;
+  --success: #34d399;
+  --danger: #f87171;
+  --bg: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-light: #64748b;
+  --border: #334155;
+  --border-light: #1e293b;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.3);
+  color-scheme: dark;
+}
+
 html { scroll-behavior: smooth; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
@@ -166,6 +191,10 @@ ul, ol { list-style: none; }
 .cons-box { background: #fef2f2; border: 1px solid #fecaca; }
 .pros-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #166534; }
 .cons-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: #991b1b; }
+html.dark .pros-box { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); }
+html.dark .cons-box { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.2); }
+html.dark .pros-box h3 { color: #34d399; }
+html.dark .cons-box h3 { color: #f87171; }
 .pros-box ul li, .cons-box ul li {
   padding: 8px 0; font-size: 15px; display: flex; align-items: flex-start; gap: 10px;
   border-bottom: 1px solid rgba(0,0,0,0.05); list-style: none;
@@ -173,6 +202,9 @@ ul, ol { list-style: none; }
 .pros-box ul li:last-child, .cons-box ul li:last-child { border-bottom: none; }
 
 /* ===== FLOATING CTA (MOBILE) ===== */
+html.dark .floating-cta { background: rgba(15,23,42,0.95); }
+html.dark .newsletter { background: linear-gradient(135deg, #334155, #1e293b); border: 1px solid var(--border); }
+
 .floating-cta {
   display: none; position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);

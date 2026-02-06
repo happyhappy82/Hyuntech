@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryHero from '../../../components/CategoryHero.astro';
+import ContentCard from '../../../components/ContentCard.astro';
+import { getContentByCategory, categoryMeta } from '../../../data/content-registry';
+
+const category = 'audio' as const;
+const meta = categoryMeta[category];
+const contents = getContentByCategory(category);
+const contentTypes = ['전체', ...new Set(contents.map(c => c.contentType))];
+---
+
+<BaseLayout
+  title={`${meta.name} - 추천, 리뷰, 구매 가이드 | HyunTech`}
+  description={meta.description}
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <span>{meta.name}</span>
+    </div>
+  </div>
+
+  <CategoryHero
+    category={meta.name}
+    description={meta.description}
+    emoji={meta.emoji}
+    contentCount={contents.length}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="filter-tabs">
+        {contentTypes.map((type, i) => (
+          <button class:list={['filter-tab', { active: i === 0 }]} data-filter={type}>{type}</button>
+        ))}
+      </div>
+
+      <div class="content-grid">
+        {contents.map(item => (
+          <ContentCard
+            href={`/category/${category}/${item.slug}/`}
+            emoji={item.emoji}
+            contentType={item.contentType}
+            title={item.title}
+            description={item.description}
+            date={item.date}
+            readTime={item.readTime}
+            featured={item.featured}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.content-grid .content-card, .content-grid a');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.getAttribute('data-filter');
+      cards.forEach(card => {
+        const tag = card.querySelector('.content-type-tag');
+        if (!tag) return;
+        if (filter === '전체' || tag.textContent === filter) {
+          (card as HTMLElement).style.display = '';
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .filter-tab {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .filter-tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .filter-tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 1024px) {
+    .content-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+import ReviewCard from '../../../components/ReviewCard.astro';
+import FAQ from '../../../components/FAQ.astro';
+import Sidebar from '../../../components/Sidebar.astro';
+
+const comparisonProducts = [
+  { name: 'AirPods Pro 2 (USB-C)', price: '33.9만~', weight: '5.3g (개당)', cpu: 'H2 칩', battery: '6시간 (30시간)', display: 'ANC + 적응형', target: 'Apple 유저', productId: 'airpods-pro-2', isBest: true },
+  { name: 'Sony WF-1000XM5', price: '29.9만~', weight: '5.9g (개당)', cpu: 'V2 프로세서', battery: '8시간 (24시간)', display: 'ANC 최강', target: '음질 최고', productId: 'sony-wf-1000xm5' },
+  { name: 'Samsung Galaxy Buds3 Pro', price: '25.9만~', weight: '5.4g (개당)', cpu: '삼성 칩', battery: '7시간 (30시간)', display: 'ANC + 360오디오', target: '삼성 유저', productId: 'galaxy-buds3-pro' },
+  { name: 'Sony WH-1000XM5', price: '34.9만~', weight: '250g', cpu: 'V1 + QN1', battery: '30시간', display: 'ANC 헤드폰', target: '헤드폰 최고', productId: 'sony-wh-1000xm5' },
+  { name: 'Apple AirPods Max (USB-C)', price: '76.9만~', weight: '398g', cpu: 'H2 칩', battery: '20시간', display: 'ANC 프리미엄', target: 'Apple 프리미엄', productId: 'airpods-max' },
+  { name: 'Nothing Ear (2)', price: '14.9만~', weight: '4.5g (개당)', cpu: '-', battery: '6.3시간 (36시간)', display: 'ANC 가성비', target: '가성비 ANC', productId: 'nothing-ear-2' },
+];
+
+const faqItems = [
+  { question: '노이즈캔슬링(ANC)이 꼭 필요한가요?', answer: '카페, 대중교통, 비행기에서 자주 사용한다면 <strong>강력 추천합니다.</strong> ANC 없이는 볼륨을 높여야 해서 귀 건강에 해롭습니다. 조용한 환경에서만 쓴다면 없어도 됩니다. 요즘은 10만원대에도 괜찮은 ANC 이어폰이 있습니다.' },
+  { question: '이어폰 vs 헤드폰, 어떤 게 좋을까요?', answer: '<strong>이어폰:</strong> 가볍고 휴대 편함, 운동 가능. <strong>헤드폰:</strong> 음질과 ANC 성능이 일반적으로 더 우수, 장시간 착용 편안. 이동이 많으면 이어폰, 집/사무실 위주면 헤드폰을 추천합니다.' },
+  { question: '코덱이 뭔가요? LDAC, AAC 차이는?', answer: '<strong>AAC:</strong> iPhone 기본 코덱. 안정적이고 품질 양호. <strong>LDAC:</strong> 소니 개발. 고음질 전송 가능 (안드로이드). <strong>aptX:</strong> 퀄컴 코덱. 저지연. iPhone 사용자는 AAC만 되므로 코덱 고민할 필요 없고, 안드로이드에서 고음질을 원하면 LDAC 지원 제품을 고르세요.' },
+  { question: '완전무선 이어폰의 배터리는 어느 정도가 좋은가요?', answer: '이어폰 단독 <strong>6시간 이상</strong>, 케이스 포함 <strong>24시간 이상</strong>이면 양호합니다. 하루 3~4시간 사용 기준으로 이틀에 한 번 충전하는 수준입니다. ANC 켜면 1~2시간 줄어들 수 있습니다.' },
+];
+
+const toc = [
+  { href: '#intro', label: '서론 & 선정 기준' },
+  { href: '#top3', label: 'TOP 3 요약' },
+  { href: '#comparison', label: '비교 테이블' },
+  { href: '#reviews', label: '제품별 상세 리뷰' },
+  { href: '#faq', label: '구매 FAQ' },
+];
+
+const sellers = [
+  { store: 'coupang', label: '쿠팡', price: '339,000원', productId: 'airpods-pro-2' },
+  { store: 'apple', label: 'Apple Store', price: '349,000원', productId: 'airpods-pro-2' },
+  { store: 'naver', label: '네이버 쇼핑', price: '329,000원', productId: 'airpods-pro-2' },
+];
+---
+
+<BaseLayout
+  title="2025년 이어폰/헤드폰 추천 TOP 6 - ANC 노이즈캔슬링 비교 | HyunTech"
+  description="2025년 노이즈캔슬링 이어폰/헤드폰 추천. AirPods Pro 2, Sony WF-1000XM5 등 실사용 비교로 최고의 오디오 제품을 선정했습니다."
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href="/category/audio/">오디오</a> <span class="sep">/</span>
+      <span>이어폰/헤드폰 추천</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-primary">오디오 추천</span>
+      <h1>2025년 이어폰/헤드폰 추천 TOP 6 &ndash; 노이즈캔슬링 완벽 비교</h1>
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        <span>2025년 1월 20일 업데이트</span>
+        <span class="divider">|</span>
+        <span>9분 읽기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+
+        <section id="intro">
+          <p>출퇴근길, 카페, 사무실... 좋은 이어폰/헤드폰은 일상의 질을 바꿉니다. 특히 노이즈캔슬링(ANC) 기능은 한번 쓰면 못 돌아갈 정도로 편리합니다.</p>
+          <p>HyunTech 편집팀은 <strong>음질 측정</strong>, <strong>ANC 성능 비교</strong>, <strong>착용감 테스트</strong>를 통해 2025년 최고의 이어폰과 헤드폰 6종을 선정했습니다.</p>
+          <h3>선정 기준</h3>
+          <div class="criteria-grid">
+            <div class="criteria-item"><div class="icon">&#127925;</div><h4>음질</h4><p>음역대 밸런스와 해상력</p></div>
+            <div class="criteria-item"><div class="icon">&#128263;</div><h4>ANC</h4><p>노이즈캔슬링 성능</p></div>
+            <div class="criteria-item"><div class="icon">&#128266;</div><h4>착용감</h4><p>장시간 착용 편안함</p></div>
+            <div class="criteria-item"><div class="icon">&#128267;</div><h4>배터리</h4><p>재생시간 및 충전 속도</p></div>
+          </div>
+        </section>
+
+        <section id="top3">
+          <h2>TOP 3 한눈에 보기</h2>
+          <div class="top-picks-inline">
+            <ProductCard rank={1} featured name="AirPods Pro 2 (USB-C)" subtitle="Apple 유저 필수템" badge="최고 추천" badgeType="best" pros={['적응형 ANC 최고 수준', 'H2 칩 공간 음향', 'iPhone 완벽 연동']} price="339,000원" productId="airpods-pro-2" />
+            <ProductCard rank={2} name="Sony WF-1000XM5" subtitle="음질의 절대 강자" badge="음질 최고" badgeType="primary" pros={['LDAC 고음질 지원', 'ANC 업계 최강', '8시간 재생시간']} price="299,000원" productId="sony-wf-1000xm5" />
+            <ProductCard rank={3} name="Nothing Ear (2)" subtitle="가성비 ANC의 혁명" badge="가성비 추천" badgeType="success" pros={['14.9만원 합리적 가격', '쓸만한 ANC 성능', '독특한 투명 디자인']} price="149,000원" productId="nothing-ear-2" />
+          </div>
+        </section>
+
+        <section id="comparison">
+          <h2>전체 비교 테이블</h2>
+          <ComparisonTable products={comparisonProducts} />
+        </section>
+
+        <section id="reviews">
+          <h2>제품별 상세 리뷰</h2>
+
+          <ReviewCard
+            rank={1} name="AirPods Pro 2 (USB-C)" subtitle="iPhone 유저의 완벽한 파트너"
+            badge="최고 추천" badgeType="best" score={9.5}
+            specs={[{label:'타입',value:'완전무선 이어폰'},{label:'드라이버',value:'커스텀 Apple 드라이버'},{label:'ANC',value:'적응형 ANC + 적응형 투명'},{label:'배터리',value:'6시간 (케이스 30시간)'},{label:'무게',value:'5.3g (개당)'}]}
+            pros={['적응형 ANC - 환경에 따라 자동 조절','적응형 투명 모드 - 시끄러운 소리만 차단','대화 감지 자동 볼륨 조절','USB-C 케이스 + MagSafe 충전','청력 보호 기능 (청력 검사)']}
+            cons={['33.9만원 높은 가격','안드로이드에서 기능 제한','음질만 놓으면 Sony에 밀림']}
+            recommendation="iPhone 사용자라면 고민할 필요 없이 최고의 선택입니다. 적응형 ANC와 투명 모드의 완성도가 압도적이고, Apple 생태계 연동이 완벽합니다."
+            productId="airpods-pro-2"
+          />
+
+          <ReviewCard
+            rank={2} name="Sony WF-1000XM5" subtitle="음질과 ANC의 절대 강자"
+            badge="음질 최고" badgeType="primary" score={9.4}
+            specs={[{label:'타입',value:'완전무선 이어폰'},{label:'드라이버',value:'8.4mm 다이내믹'},{label:'ANC',value:'통합 프로세서 V2'},{label:'배터리',value:'8시간 (케이스 24시간)'},{label:'무게',value:'5.9g (개당)'}]}
+            pros={['LDAC 코덱 고음질 (안드로이드)','V2 프로세서 업계 최강 ANC','8시간 긴 배터리','DSEE Extreme 음질 업스케일링','멀티포인트 연결 지원']}
+            cons={['29.9만원 높은 가격','이어팁 호환성 제한','통화 품질 AirPods 대비 아쉬움']}
+            recommendation="음질을 최우선시하는 사용자, 특히 안드로이드 + LDAC 조합에서 진가를 발휘합니다. iPhone에서도 훌륭하지만, AAC만 지원되어 음질 차이가 줄어듭니다."
+            productId="sony-wf-1000xm5"
+          />
+
+          <ReviewCard
+            rank={3} name="Samsung Galaxy Buds3 Pro" subtitle="삼성 생태계 최적화"
+            score={8.9}
+            specs={[{label:'타입',value:'완전무선 이어폰'},{label:'드라이버',value:'10.5mm 플래너 + 6.1mm 트위터'},{label:'ANC',value:'인텔리전트 ANC'},{label:'배터리',value:'7시간 (케이스 30시간)'},{label:'무게',value:'5.4g (개당)'}]}
+            pros={['듀얼 드라이버 풍부한 음질','360 Audio 공간 음향','Galaxy AI 실시간 통역','삼성 기기 자동 전환','IP57 방수']}
+            cons={['25.9만원 높은 가격','삼성 외 기기에서 기능 제한','오픈형에서 밀폐형으로 변경']}
+            recommendation="Galaxy 스마트폰/태블릿 사용자. AI 통역 기능과 자동 기기 전환이 편리합니다."
+            productId="galaxy-buds3-pro"
+          />
+
+          <ReviewCard
+            rank={4} name="Sony WH-1000XM5" subtitle="오버이어 ANC의 왕"
+            score={9.3}
+            specs={[{label:'타입',value:'오버이어 헤드폰'},{label:'드라이버',value:'30mm 카본 파이버'},{label:'ANC',value:'듀얼 프로세서 (V1+QN1)'},{label:'배터리',value:'30시간'},{label:'무게',value:'250g'}]}
+            pros={['30시간 압도적 배터리','250g 가벼운 착용감','멀티포인트 2대 동시 연결','접이식 경량 디자인','LDAC 고음질']}
+            cons={['34.9만원 높은 가격','측압이 약해 고개 숙이면 흘러내림','방수 미지원']}
+            recommendation="집, 사무실, 비행기에서 장시간 사용하는 사용자. 30시간 배터리와 250g 경량 설계로 장시간 착용해도 부담 없습니다."
+            productId="sony-wh-1000xm5"
+          />
+
+          <ReviewCard
+            rank={5} name="Apple AirPods Max (USB-C)" subtitle="Apple의 프리미엄 헤드폰"
+            score={9.0}
+            specs={[{label:'타입',value:'오버이어 헤드폰'},{label:'드라이버',value:'40mm Apple 커스텀'},{label:'ANC',value:'H2 칩 적응형 ANC'},{label:'배터리',value:'20시간'},{label:'무게',value:'398g'}]}
+            pros={['H2 칩 적응형 ANC 최상급','공간 음향 + 머리 추적','프리미엄 알루미늄/스틸 빌드','USB-C 충전 (2024 리뉴얼)','Apple 생태계 완벽 연동']}
+            cons={['76.9만원 매우 높은 가격','398g 무거운 무게','Smart Case가 완전히 보호하지 않음']}
+            recommendation="Apple 생태계에서 최고의 음질과 ANC를 원하고, 가격에 민감하지 않은 사용자. 빌드 퀄리티와 소리 모두 프리미엄입니다."
+            productId="airpods-max"
+          />
+
+          <ReviewCard
+            rank={6} name="Nothing Ear (2)" subtitle="가성비 ANC의 혁명"
+            badge="가성비 추천" badgeType="success" score={8.5}
+            specs={[{label:'타입',value:'완전무선 이어폰'},{label:'드라이버',value:'11.6mm 커스텀'},{label:'ANC',value:'스마트 ANC'},{label:'배터리',value:'6.3시간 (케이스 36시간)'},{label:'무게',value:'4.5g (개당)'}]}
+            pros={['14.9만원 합리적 가격에 ANC','투명 디자인 독특한 외관','LDAC 코덱 지원','36시간 긴 케이스 배터리','듀얼 연결 지원']}
+            cons={['ANC 성능 프리미엄 대비 약함','통화 품질 보통','앱 기능 제한적']}
+            recommendation="15만원 이하에서 ANC 이어폰을 찾는 사용자. 디자인, 음질, ANC 모두 가격 대비 훌륭합니다. 프리미엄 제품의 70% 성능을 40% 가격에 누릴 수 있습니다."
+            productId="nothing-ear-2"
+          />
+        </section>
+
+        <section id="faq">
+          <h2>이어폰/헤드폰 구매 전 알아야 할 것들</h2>
+          <FAQ items={faqItems} />
+        </section>
+
+      </div>
+
+      <Sidebar toc={toc} ctaProduct="airpods-pro-2" ctaPrice="339,000원~" ctaPriceNote="AirPods Pro 2 | 쿠팡 기준" sellers={sellers} />
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .top-picks-inline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+  @media (max-width: 1024px) { .top-picks-inline { grid-template-columns: 1fr; } }
+</style>

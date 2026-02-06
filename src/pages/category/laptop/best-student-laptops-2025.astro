@@ -1,10 +1,10 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProductCard from '../../components/ProductCard.astro';
-import ComparisonTable from '../../components/ComparisonTable.astro';
-import ReviewCard from '../../components/ReviewCard.astro';
-import FAQ from '../../components/FAQ.astro';
-import Sidebar from '../../components/Sidebar.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+import ReviewCard from '../../../components/ReviewCard.astro';
+import FAQ from '../../../components/FAQ.astro';
+import Sidebar from '../../../components/Sidebar.astro';
 
 const comparisonProducts = [
   { name: 'MacBook Air M3', price: '139만~', weight: '1.24kg', cpu: 'Apple M3', battery: '18시간', display: '13.6" Retina', target: '올라운더', productId: 'macbook-air-m3', isBest: true },
@@ -178,7 +178,7 @@ const sellers = [
         <section id="faq">
           <h2>대학생 노트북 구매 전 알아야 할 5가지</h2>
           <FAQ items={faqItems} />
-          <div style="text-align:center; margin-top:32px;">
+          <div style="text-align:center; margin-top:20px; margin-bottom:40px;">
             <a href="/guides/laptop-buying-guide/" class="btn btn-primary btn-lg">노트북 구매 가이드 전체 보기 &rarr;</a>
           </div>
         </section>

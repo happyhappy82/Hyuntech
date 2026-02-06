@@ -20,6 +20,14 @@ import '../styles/global.css';
   <link rel="dns-prefetch" href="https://www.coupang.com">
   <link rel="dns-prefetch" href="https://www.amazon.com">
   <title>{title}</title>
+  <script is:inline>
+    (function(){
+      const t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 <body>
   <Header />

@@ -71,8 +71,10 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
     padding: 6px 12px; border-left: 2px solid transparent;
     border-radius: 0 var(--radius) var(--radius) 0; transition: all var(--transition);
   }
-  .sidebar-toc li a:hover {
+  .sidebar-toc li a:hover,
+  .sidebar-toc li a.active {
     color: var(--primary); background: var(--primary-light); border-left-color: var(--primary);
+    font-weight: 600;
   }
   .sidebar-cta {
     background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -98,3 +100,39 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
     .sidebar { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  const tocLinks = document.querySelectorAll('.sidebar-toc a');
+  if (tocLinks.length > 0) {
+    const sectionIds = Array.from(tocLinks).map(link => link.getAttribute('href').replace('#', ''));
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function updateActive() {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      // 페이지 맨 아래면 마지막 항목 활성화
+      if (scrollY + viewportHeight >= docHeight - 10) {
+        tocLinks.forEach(link => link.classList.remove('active'));
+        tocLinks[tocLinks.length - 1]?.classList.add('active');
+        return;
+      }
+
+      let currentId = '';
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 120) {
+          currentId = section.id;
+        }
+      }
+
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+      });
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+</script>

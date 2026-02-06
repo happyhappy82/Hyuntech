@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import ComparisonTable from '../../../components/ComparisonTable.astro';
+import ReviewCard from '../../../components/ReviewCard.astro';
+import FAQ from '../../../components/FAQ.astro';
+import Sidebar from '../../../components/Sidebar.astro';
+
+const comparisonProducts = [
+  { name: 'iPad Air M2 (11")', price: '89.9만~', weight: '462g', cpu: 'Apple M2', battery: '10시간', display: '11" Liquid Retina', target: '올라운더', productId: 'ipad-air-m2', isBest: true },
+  { name: 'iPad Pro M4 (11")', price: '159.9만~', weight: '444g', cpu: 'Apple M4', battery: '10시간', display: '11" Ultra Retina XDR', target: '프로 작업', productId: 'ipad-pro-m4' },
+  { name: 'Galaxy Tab S10+', price: '139.7만~', weight: '571g', cpu: 'Dimensity 9300+', battery: '12시간', display: '12.4" AMOLED 120Hz', target: '안드로이드 최고', productId: 'galaxy-tab-s10-plus' },
+  { name: 'iPad 10세대', price: '59.9만~', weight: '477g', cpu: 'A14 Bionic', battery: '10시간', display: '10.9" Liquid Retina', target: '가성비 입문', productId: 'ipad-10th' },
+  { name: 'Galaxy Tab S9 FE', price: '54.9만~', weight: '523g', cpu: 'Exynos 1380', battery: '13시간', display: '10.9" IPS 90Hz', target: '가성비 안드로이드', productId: 'galaxy-tab-s9-fe' },
+  { name: 'iPad Mini 7', price: '74.9만~', weight: '297g', cpu: 'A17 Pro', battery: '10시간', display: '8.3" Liquid Retina', target: '휴대성 최고', productId: 'ipad-mini-7' },
+];
+
+const faqItems = [
+  { question: '태블릿으로 노트북을 대체할 수 있나요?', answer: '단순 필기, 웹서핑, 영상 시청이라면 충분히 대체 가능합니다. 하지만 <strong>코딩, 엑셀 작업, 멀티태스킹</strong>이 필요하다면 노트북이 더 효율적입니다. iPad Pro + Magic Keyboard 조합이 가장 노트북에 가깝지만, 파일 관리와 소프트웨어 호환에서 한계가 있습니다.' },
+  { question: '아이패드 vs 갤럭시탭, 어떤 게 좋을까요?', answer: '<strong>iPad:</strong> 앱 최적화 우수, Apple Pencil 경험 최고, 영상/디자인 앱 풍부. <strong>Galaxy Tab:</strong> 파일 관리 자유로움, DeX 모드로 PC처럼 사용, S펜 기본 포함. 이미 iPhone/Mac 사용자라면 iPad, 안드로이드/윈도우 생태계라면 Galaxy Tab이 편합니다.' },
+  { question: '필기용 태블릿은 어떤 게 좋나요?', answer: '필기 경험 기준으로 <strong>iPad Air + Apple Pencil 2</strong>가 가장 추천입니다. 지연 시간이 가장 짧고, GoodNotes/Notability 등 필기 앱이 뛰어납니다. 안드로이드에서는 Galaxy Tab S 시리즈 + S펜 조합이 좋습니다. S펜은 별도 구매 없이 기본 포함이 장점입니다.' },
+  { question: '태블릿 용량은 얼마가 적당한가요?', answer: '필기/웹서핑 위주라면 <strong>64~128GB</strong>면 충분합니다. 영화 다운로드, 게임을 많이 한다면 <strong>256GB</strong>를 추천합니다. Galaxy Tab은 microSD로 확장 가능하지만, iPad는 불가하므로 처음부터 넉넉하게 선택하세요.' },
+];
+
+const toc = [
+  { href: '#intro', label: '서론 & 선정 기준' },
+  { href: '#top3', label: 'TOP 3 요약' },
+  { href: '#comparison', label: '비교 테이블' },
+  { href: '#reviews', label: '제품별 상세 리뷰' },
+  { href: '#faq', label: '구매 FAQ' },
+];
+
+const sellers = [
+  { store: 'coupang', label: '쿠팡', price: '899,000원', productId: 'ipad-air-m2' },
+  { store: 'apple', label: 'Apple Store', price: '899,000원', productId: 'ipad-air-m2' },
+  { store: 'naver', label: '네이버 쇼핑', price: '879,000원', productId: 'ipad-air-m2' },
+];
+---
+
+<BaseLayout
+  title="2025년 태블릿 추천 TOP 6 - iPad vs Galaxy Tab 비교 | HyunTech"
+  description="2025년 태블릿 추천. iPad Air, iPad Pro, Galaxy Tab 실사용 비교로 용도별 최적의 태블릿을 선정했습니다."
+>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href="/category/tablet/">태블릿</a> <span class="sep">/</span>
+      <span>태블릿 추천</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-primary">태블릿 추천</span>
+      <h1>2025년 태블릿 추천 TOP 6 &ndash; iPad vs Galaxy Tab, 용도별 최고의 선택</h1>
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        <span>2025년 1월 25일 업데이트</span>
+        <span class="divider">|</span>
+        <span>11분 읽기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+
+        <section id="intro">
+          <p>태블릿은 필기, 영상 시청, 가벼운 업무까지 다목적으로 활용할 수 있는 기기입니다. iPad와 Galaxy Tab 양강 구도에서 어떤 제품이 나에게 맞는지 비교해 드립니다.</p>
+          <p>HyunTech 편집팀은 <strong>실사용 경험</strong>과 <strong>앱 생태계 분석</strong>을 기반으로, 2025년 최고의 태블릿 6종을 선정했습니다.</p>
+          <h3>선정 기준</h3>
+          <div class="criteria-grid">
+            <div class="criteria-item"><div class="icon">&#9997;</div><h4>필기감</h4><p>펜슬/S펜 반응성과 정밀도</p></div>
+            <div class="criteria-item"><div class="icon">&#128250;</div><h4>디스플레이</h4><p>화면 품질과 크기</p></div>
+            <div class="criteria-item"><div class="icon">&#128247;</div><h4>앱 생태계</h4><p>태블릿 최적화 앱 수준</p></div>
+            <div class="criteria-item"><div class="icon">&#128176;</div><h4>가격</h4><p>성능 대비 합리적 가격</p></div>
+          </div>
+        </section>
+
+        <section id="top3">
+          <h2>TOP 3 한눈에 보기</h2>
+          <div class="top-picks-inline">
+            <ProductCard rank={1} featured name="iPad Air M2 (11&quot;)" subtitle="가장 추천하는 태블릿" badge="최고 추천" badgeType="best" pros={['M2 칩 강력한 성능', 'Apple Pencil Pro 지원', '뛰어난 앱 생태계']} price="899,000원" productId="ipad-air-m2" />
+            <ProductCard rank={2} name="Galaxy Tab S10+" subtitle="안드로이드 최강자" badge="안드로이드 추천" badgeType="primary" pros={['12.4" AMOLED 120Hz', 'S펜 기본 포함', 'DeX 모드 PC 활용']} price="1,397,000원" productId="galaxy-tab-s10-plus" />
+            <ProductCard rank={3} name="iPad 10세대" subtitle="입문용 가성비 최고" badge="가성비 추천" badgeType="success" pros={['59.9만원 합리적 가격', 'A14 칩 충분한 성능', 'Apple 생태계 진입']} price="599,000원" productId="ipad-10th" />
+          </div>
+        </section>
+
+        <section id="comparison">
+          <h2>전체 비교 테이블</h2>
+          <ComparisonTable products={comparisonProducts} />
+        </section>
+
+        <section id="reviews">
+          <h2>제품별 상세 리뷰</h2>
+
+          <ReviewCard
+            rank={1} name="iPad Air M2 (11&quot;)" subtitle="모든 사람을 위한 최고의 태블릿"
+            badge="최고 추천" badgeType="best" score={9.4}
+            specs={[{label:'칩',value:'Apple M2'},{label:'디스플레이',value:'11" Liquid Retina'},{label:'저장공간',value:'128/256/512GB/1TB'},{label:'무게',value:'462g'},{label:'배터리',value:'10시간'}]}
+            pros={['M2 칩 데스크탑급 성능','Apple Pencil Pro 호버/스퀴즈 지원','P3 광색역 선명한 디스플레이','Magic Keyboard 호환','5년 이상 소프트웨어 업데이트']}
+            cons={['기본 128GB는 부족할 수 있음','Face ID 미지원 (Touch ID)','ProMotion 120Hz 미지원']}
+            recommendation="대학생 필기, 영상 시청, 가벼운 디자인 작업까지 모든 용도에 가장 균형 잡힌 태블릿입니다. iPad Pro의 80% 성능을 60% 가격에 누릴 수 있습니다."
+            productId="ipad-air-m2"
+          />
+
+          <ReviewCard
+            rank={2} name="iPad Pro M4 (11&quot;)" subtitle="태블릿의 끝판왕"
+            badge="프로 작업" badgeType="primary" score={9.6}
+            specs={[{label:'칩',value:'Apple M4'},{label:'디스플레이',value:'11" Ultra Retina XDR (OLED)'},{label:'저장공간',value:'256GB~2TB'},{label:'무게',value:'444g'},{label:'배터리',value:'10시간'}]}
+            pros={['M4 칩 압도적 성능','OLED Ultra Retina XDR 최고의 화질','Thunderbolt / USB 4 포트','ProMotion 120Hz + P3 광색역','Apple Pencil Pro 완벽 지원']}
+            cons={['159.9만원 높은 가격','일반 사용자에겐 오버스펙','iPadOS 한계는 여전']}
+            recommendation="전문 일러스트, 영상 편집, 3D 작업을 태블릿에서 하는 프로 사용자. 일반 사용자라면 iPad Air가 더 합리적입니다."
+            productId="ipad-pro-m4"
+          />
+
+          <ReviewCard
+            rank={3} name="Samsung Galaxy Tab S10+" subtitle="안드로이드 태블릿의 정점"
+            score={9.0}
+            specs={[{label:'칩',value:'Dimensity 9300+'},{label:'디스플레이',value:'12.4" Dynamic AMOLED 2X 120Hz'},{label:'저장공간',value:'256/512GB + microSD'},{label:'무게',value:'571g'},{label:'배터리',value:'10,090mAh (12시간)'}]}
+            pros={['12.4" AMOLED 120Hz 압도적 화면','S펜 기본 포함 (별도 구매 불필요)','DeX 모드로 PC처럼 사용','microSD 최대 1.5TB 확장','Galaxy AI 기능 탑재']}
+            cons={['139.7만원 높은 가격','태블릿 최적화 앱 iPad 대비 부족','571g 다소 무거움']}
+            recommendation="안드로이드/삼성 생태계 사용자. S펜이 기본 포함이고, DeX 모드로 생산성도 높습니다. 큰 화면에서 멀티태스킹을 원한다면 최고의 안드로이드 태블릿입니다."
+            productId="galaxy-tab-s10-plus"
+          />
+
+          <ReviewCard
+            rank={4} name="iPad 10세대" subtitle="가성비 입문용 태블릿"
+            badge="가성비 추천" badgeType="success" score={8.5}
+            specs={[{label:'칩',value:'A14 Bionic'},{label:'디스플레이',value:'10.9" Liquid Retina'},{label:'저장공간',value:'64/256GB'},{label:'무게',value:'477g'},{label:'배터리',value:'10시간'}]}
+            pros={['59.9만원 합리적 가격','A14 칩 일상 사용 충분','USB-C 포트 탑재','Apple 생태계 진입 가능']}
+            cons={['Apple Pencil 1세대만 지원','기본 64GB 부족','ProMotion 미지원']}
+            recommendation="처음 태블릿을 구매하거나 예산이 한정된 학생. 필기, 영상 시청, 웹서핑 용도로 충분합니다."
+            productId="ipad-10th"
+          />
+
+          <ReviewCard
+            rank={5} name="Galaxy Tab S9 FE" subtitle="가성비 안드로이드 입문"
+            score={8.3}
+            specs={[{label:'칩',value:'Exynos 1380'},{label:'디스플레이',value:'10.9" IPS 90Hz'},{label:'저장공간',value:'128/256GB + microSD'},{label:'무게',value:'523g'},{label:'배터리',value:'8,000mAh (13시간)'}]}
+            pros={['54.9만원 합리적 가격','S펜 기본 포함','microSD 확장 가능','IP68 방수 방진','13시간 긴 배터리']}
+            cons={['AMOLED 아닌 IPS 패널','Exynos 칩 성능 제한','90Hz 주사율']}
+            recommendation="안드로이드에서 가성비 태블릿을 찾는 사용자. S펜이 기본 포함되고 방수까지 지원하는 점이 매력적입니다."
+            productId="galaxy-tab-s9-fe"
+          />
+
+          <ReviewCard
+            rank={6} name="iPad Mini 7" subtitle="한 손에 들어오는 파워"
+            score={8.7}
+            specs={[{label:'칩',value:'A17 Pro'},{label:'디스플레이',value:'8.3" Liquid Retina'},{label:'저장공간',value:'128/256/512GB'},{label:'무게',value:'297g'},{label:'배터리',value:'10시간'}]}
+            pros={['297g 초경량 한 손 그립','A17 Pro 강력한 성능','Apple Pencil Pro 지원','휴대성 최고']}
+            cons={['74.9만원 작은 화면 치고 높은 가격','8.3" 멀티태스킹 제한','젤리 스크롤 현상']}
+            recommendation="이동이 많고 가볍게 들고 다니며 필기/독서할 태블릿을 원하는 사용자. 비행기, 지하철 등에서 사용하기 최적입니다."
+            productId="ipad-mini-7"
+          />
+        </section>
+
+        <section id="faq">
+          <h2>태블릿 구매 전 알아야 할 것들</h2>
+          <FAQ items={faqItems} />
+        </section>
+
+      </div>
+
+      <Sidebar toc={toc} ctaProduct="ipad-air-m2" ctaPrice="899,000원~" ctaPriceNote="iPad Air M2 | 쿠팡 기준" sellers={sellers} />
+    </div>
+  </div>
+
+</BaseLayout>
+
+<style>
+  .top-picks-inline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+  @media (max-width: 1024px) { .top-picks-inline { grid-template-columns: 1fr; } }
+</style>

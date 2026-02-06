@@ -21,9 +21,9 @@
         <h4>카테고리</h4>
         <ul>
           <li><a href="/category/laptop/">노트북</a></li>
-          <li><a href="#">모니터</a></li>
-          <li><a href="#">태블릿</a></li>
-          <li><a href="#">오디오</a></li>
+          <li><a href="/category/monitor/">모니터</a></li>
+          <li><a href="/category/tablet/">태블릿</a></li>
+          <li><a href="/category/audio/">오디오</a></li>
         </ul>
       </div>
       <div>
@@ -54,7 +54,9 @@
 <style>
   .footer {
     background: #0f172a; color: rgba(255,255,255,0.7); padding: 60px 0 32px;
+    border-top: 1px solid transparent;
   }
+  :global(html.dark) .footer { background: #020617; border-top-color: var(--border); }
   .footer-grid {
     display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
     margin-bottom: 40px;
