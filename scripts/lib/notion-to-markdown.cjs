@@ -39,6 +39,47 @@ function escapeAttr(str) {
 }
 
 /**
+ * rich_text 배열에서 첫 번째 href 추출
+ */
+function extractHrefFromRichText(richTexts) {
+  if (!richTexts || !Array.isArray(richTexts)) return null;
+  for (const rt of richTexts) {
+    if (rt.href) return rt.href;
+    if (rt.text && rt.text.link && rt.text.link.url) return rt.text.link.url;
+  }
+  return null;
+}
+
+/**
+ * 모든 블록을 사전 스캔하여 제품 순위별 CTA URL 수집
+ * 리뷰 섹션의 👉 CTA 링크에서 추출
+ */
+function collectCtaUrls(blocks) {
+  const ctaByRank = {};
+  let currentRank = 0;
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    if (block.type === 'heading_3') {
+      const text = getPlainText(block);
+      const match = text.match(/[🥇🥈🥉]?\s*(\d+)\./);
+      if (match) currentRank = parseInt(match[1]);
+    }
+    if (block.type === 'paragraph') {
+      const text = getPlainText(block);
+      if (text.includes('👉') && currentRank > 0 && !ctaByRank[currentRank]) {
+        const richTexts = block.paragraph && block.paragraph.rich_text;
+        const href = extractHrefFromRichText(richTexts);
+        if (href) {
+          ctaByRank[currentRank] = href;
+        }
+      }
+    }
+  }
+  return ctaByRank;
+}
+
+/**
  * 블록 배열을 리치 HTML 문자열로 변환
  * 섹션 패턴을 감지하여 적절한 컴포넌트 HTML 출력
  */
@@ -53,6 +94,9 @@ function blocksToMarkdown(blocks, imageMap) {
 function parseSections(blocks, imageMap) {
   const output = [];
   let i = 0;
+
+  // 사전 스캔: 리뷰 카드에서 순위별 CTA URL 수집
+  const ctaByRank = collectCtaUrls(blocks);
 
   while (i < blocks.length) {
     const block = blocks[i];
@@ -73,7 +117,7 @@ function parseSections(blocks, imageMap) {
 
       // 패턴 2: TOP N 한눈에 보기
       if (/TOP\s*\d*.*한눈에\s*보기/i.test(heading)) {
-        const result = parseTopPicksSection(blocks, i, imageMap);
+        const result = parseTopPicksSection(blocks, i, imageMap, ctaByRank);
         output.push(result.html);
         i = result.nextIndex;
         continue;
@@ -175,7 +219,7 @@ function parseCriteriaSection(blocks, startIndex, imageMap) {
 // ==========================================
 // 패턴 2: TOP N 한눈에 보기 → pick-card
 // ==========================================
-function parseTopPicksSection(blocks, startIndex, imageMap) {
+function parseTopPicksSection(blocks, startIndex, imageMap, ctaByRank) {
   const heading = getPlainText(blocks[startIndex]);
   let i = startIndex + 1;
   const picks = [];
@@ -202,7 +246,9 @@ function parseTopPicksSection(blocks, startIndex, imageMap) {
       const pick = picks[idx];
       const rank = idx + 1;
       const isFeatured = rank === 1;
-      html += renderPickCard(pick, rank, isFeatured);
+      // ctaByRank에서 해당 순위의 CTA URL 주입
+      const ctaUrl = (ctaByRank && ctaByRank[rank]) || '';
+      html += renderPickCard(pick, rank, isFeatured, ctaUrl);
     }
     html += `</div>`;
   }
@@ -259,7 +305,7 @@ function parseTopPick(blocks, startIndex, imageMap) {
   };
 }
 
-function renderPickCard(pick, rank, featured) {
+function renderPickCard(pick, rank, featured, ctaUrl) {
   const featuredClass = featured ? ' featured' : '';
   const badgeType = rank === 1 ? 'best' : rank === 2 ? 'primary' : 'success';
 
@@ -283,6 +329,10 @@ function renderPickCard(pick, rank, featured) {
   }
   if (pick.price) {
     html += `<div class="pick-price">${escapeHtml(pick.price)}</div>\n`;
+  }
+  if (ctaUrl) {
+    const cleanUrl = ctaUrl.replace(/%7B%7B/g, '').replace(/%7D%7D/g, '');
+    html += `<a href="${escapeAttr(cleanUrl)}" class="cta-btn pick-cta" rel="nofollow noopener" target="_blank">최저가 보러가기</a>\n`;
   }
   html += `</div></div>\n`;
   return html;
@@ -317,14 +367,17 @@ function parseComparisonSection(blocks, startIndex, imageMap) {
 function renderComparisonTable(block) {
   if (!block.children || block.children.length === 0) return '';
 
-  const rows = block.children.map((row) => {
-    return row.table_row.cells.map((cell) => richTextToPlain(cell));
-  });
+  // raw 셀 데이터도 보존 (href 추출용)
+  const rawRows = block.children.map((row) => row.table_row.cells);
+  const rows = rawRows.map((cells) => cells.map((cell) => richTextToPlain(cell)));
 
   if (rows.length === 0) return '';
 
   const headers = rows[0];
   const dataRows = rows.slice(1);
+
+  // CTA 열 인덱스 찾기
+  const ctaColIdx = headers.findIndex((h) => /CTA|최저가/i.test(h.replace(/\*\*/g, '')));
 
   let html = `<div class="comparison-table-wrapper">\n`;
   html += `<table class="comparison-table" aria-label="제품 비교표">\n`;
@@ -335,7 +388,9 @@ function renderComparisonTable(block) {
   html += `</tr></thead>\n`;
   html += `<tbody>\n`;
 
-  for (const row of dataRows) {
+  for (let ri = 0; ri < dataRows.length; ri++) {
+    const row = dataRows[ri];
+    const rawRow = rawRows[ri + 1]; // +1 헤더 건너뛰기
     const firstName = row[0] || '';
     const isBest = firstName.includes('🥇');
     const rowClass = isBest ? ' class="highlight-row"' : '';
@@ -345,13 +400,21 @@ function renderComparisonTable(block) {
       let cell = row[ci].replace(/\*\*/g, '');
       if (ci === 0) {
         // 제품명 셀 - 아이콘 + 이름
-        const medal = cell.match(/[🥇🥈🥉]/);
         const cleanName = cell.replace(/[🥇🥈🥉]\s*/, '').trim();
         html += `<td class="td-product-name"><div class="product-cell">`;
         html += `<div class="product-thumb">💻</div>`;
         html += escapeHtml(cleanName);
         if (isBest) html += ` <span class="best-badge">BEST</span>`;
         html += `</div></td>\n`;
+      } else if (ci === ctaColIdx && ctaColIdx >= 0) {
+        // CTA 열 - href 추출하여 링크 버튼으로 렌더링
+        const href = extractHrefFromRichText(rawRow[ci]);
+        if (href) {
+          const cleanUrl = href.replace(/%7B%7B/g, '').replace(/%7D%7D/g, '');
+          html += `<td class="td-cta"><a href="${escapeAttr(cleanUrl)}" class="cta-btn table-cta" rel="nofollow noopener" target="_blank">${escapeHtml(cell || '최저가 보기')}</a></td>\n`;
+        } else {
+          html += `<td>${escapeHtml(cell)}</td>\n`;
+        }
       } else {
         html += `<td>${escapeHtml(cell)}</td>\n`;
       }
