@@ -27,7 +27,6 @@ const formattedDate = (() => {
 const siteUrl = 'https://hyuntech.ai.kr';
 const pageUrl = `${siteUrl}/category/${category}/${Astro.url.pathname.split('/').filter(Boolean).pop()}/`;
 
-// ISO date for Schema.org
 const isoDate = (() => {
   try {
     return new Date(date).toISOString();
@@ -36,7 +35,6 @@ const isoDate = (() => {
   }
 })();
 
-// Article Schema.org JSON-LD
 const articleSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Article",
@@ -44,48 +42,21 @@ const articleSchema = JSON.stringify({
   "description": description,
   "datePublished": isoDate,
   "dateModified": isoDate,
-  "author": {
-    "@type": "Organization",
-    "name": "HyunTech",
-    "url": siteUrl,
-  },
+  "author": { "@type": "Organization", "name": "HyunTech", "url": siteUrl },
   "publisher": {
-    "@type": "Organization",
-    "name": "HyunTech",
-    "url": siteUrl,
-    "logo": {
-      "@type": "ImageObject",
-      "url": `${siteUrl}/og-default.png`,
-    },
+    "@type": "Organization", "name": "HyunTech", "url": siteUrl,
+    "logo": { "@type": "ImageObject", "url": `${siteUrl}/og-default.png` },
   },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": pageUrl,
-  },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": pageUrl },
 });
 
-// BreadcrumbList Schema.org JSON-LD
 const breadcrumbSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "홈",
-      "item": siteUrl,
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": catMeta.name,
-      "item": `${siteUrl}/category/${category}/`,
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": title,
-    },
+    { "@type": "ListItem", "position": 1, "name": "홈", "item": siteUrl },
+    { "@type": "ListItem", "position": 2, "name": catMeta.name, "item": `${siteUrl}/category/${category}/` },
+    { "@type": "ListItem", "position": 3, "name": title },
   ],
 });
 ---
@@ -95,305 +66,313 @@ const breadcrumbSchema = JSON.stringify({
     <script type="application/ld+json" set:html={articleSchema} />
     <script type="application/ld+json" set:html={breadcrumbSchema} />
   </Fragment>
-  <main class="post-page">
-    <!-- 브레드크럼 -->
-    <nav class="breadcrumb">
-      <div class="container">
-        <a href="/">홈</a>
-        <span>›</span>
-        <a href={`/category/${category}/`}>{catMeta.name}</a>
-        <span>›</span>
-        <span class="current">{title}</span>
-      </div>
-    </nav>
 
-    <!-- 글 헤더 -->
-    <header class="post-header">
-      <div class="container">
-        <div class="post-meta-tags">
-          <span class="badge">{contentType}</span>
-          {featured && <span class="badge badge-featured">추천</span>}
-        </div>
-        <h1>{title}</h1>
-        <p class="post-description">{description}</p>
-        <div class="post-meta">
-          <span class="meta-item">
-            <Fragment set:html={catMeta.emoji} /> {catMeta.name}
-          </span>
-          <span class="meta-divider">·</span>
-          <time class="meta-item" datetime={isoDate}>{formattedDate}</time>
-          <span class="meta-divider">·</span>
-          <span class="meta-item">읽는 시간 {readTime}</span>
-        </div>
-      </div>
-    </header>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">홈</a> <span class="sep">/</span>
+      <a href={`/category/${category}/`}>{catMeta.name}</a> <span class="sep">/</span>
+      <span>{title}</span>
+    </div>
+  </div>
 
-    <!-- 글 본문 -->
-    <article class="post-content">
-      <div class="container">
-        <div class="prose">
-          <slot />
-        </div>
+  <div class="container">
+    <div class="article-header">
+      <span class="badge badge-primary">{contentType}</span>
+      {featured && <span class="badge badge-accent" style="margin-left:8px;">추천</span>}
+      <h1>{title}</h1>
+      {description && <p class="post-description">{description}</p>}
+      <div class="article-meta">
+        <span class="author">HyunTech 편집팀</span>
+        <span class="divider">|</span>
+        {date && <span>{formattedDate} 업데이트</span>}
+        {readTime && (
+          <>
+            <span class="divider">|</span>
+            <span>{readTime} 읽기</span>
+          </>
+        )}
       </div>
-    </article>
-  </main>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="article-layout">
+      <div class="article-content">
+        <slot />
+      </div>
+
+      <!-- Auto-generated Sidebar -->
+      <aside class="sidebar" id="post-sidebar">
+        <div class="sidebar-box sidebar-toc">
+          <h3>목차</h3>
+          <ul id="toc-list"></ul>
+        </div>
+      </aside>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
-  .post-page {
-    padding-bottom: 4rem;
-  }
-
-  .breadcrumb {
-    padding: 1rem 0;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-  }
-
-  .breadcrumb .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .breadcrumb a {
-    color: var(--text-secondary);
-    text-decoration: none;
-  }
-
-  .breadcrumb a:hover {
-    color: var(--primary);
-  }
-
-  .breadcrumb span {
-    margin: 0 0.25rem;
-  }
-
-  .breadcrumb .current {
-    color: var(--text);
-    max-width: 200px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    vertical-align: bottom;
-  }
-
-  .post-header {
-    padding: 2rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .post-header .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .post-meta-tags {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    background: var(--primary);
-    color: white;
-  }
-
-  .badge-featured {
-    background: var(--accent);
-  }
-
-  .post-header h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.3;
-    color: var(--text);
-    margin: 0 0 1rem;
-  }
-
   .post-description {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin: 0 0 1.5rem;
+    margin: -8px 0 16px;
   }
 
-  .post-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+  /* 리치 HTML 컴포넌트 스타일 (Notion 콘텐츠용) */
+
+  /* TOP 3 Picks Grid */
+  .article-content :global(.top-picks-inline) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
   }
 
-  .meta-divider {
-    opacity: 0.5;
+  @media (max-width: 1024px) {
+    .article-content :global(.top-picks-inline) { grid-template-columns: 1fr; }
   }
 
-  .post-content {
-    padding: 2.5rem 0;
+  /* Pick Card */
+  .article-content :global(.pick-card) {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    transition: all 0.3s ease; position: relative;
   }
+  .article-content :global(.pick-card:hover) { transform: translateY(-4px); box-shadow: var(--shadow-xl); border-color: var(--primary); }
+  .article-content :global(.pick-card.featured) { border: 2px solid var(--accent); }
+  .article-content :global(.pick-card.featured::before) {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: linear-gradient(90deg, var(--accent), #f97316);
+  }
+  .article-content :global(.pick-rank) {
+    position: absolute; top: 16px; left: 16px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+  .article-content :global(.pick-card.featured .pick-rank) { background: var(--accent); }
+  .article-content :global(.pick-image) {
+    background: var(--bg-secondary); padding: 32px;
+    display: flex; align-items: center; justify-content: center; min-height: 200px;
+  }
+  .article-content :global(.product-placeholder) {
+    width: 160px; height: 120px; background: var(--border);
+    border-radius: var(--radius); display: flex; align-items: center;
+    justify-content: center; color: var(--text-light); font-size: 40px;
+  }
+  .article-content :global(.pick-body) { padding: 24px; }
+  .article-content :global(.pick-body h3) { font-size: 18px; font-weight: 700; margin-bottom: 4px; border: none; padding: 0; }
+  .article-content :global(.pick-subtitle) { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+  .article-content :global(.pick-pros) { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; padding-left: 0; }
+  .article-content :global(.pick-pros li) { font-size: 13px; display: flex; align-items: flex-start; gap: 8px; list-style: none; margin: 0; }
+  .article-content :global(.pick-pros li::before) { content: '\2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+  .article-content :global(.pick-cons li::before) { content: '\2715'; color: var(--danger); font-weight: 700; }
+  .article-content :global(.pick-price) { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
 
-  .post-content .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+  /* Review Card */
+  .article-content :global(.review-card) {
+    display: grid; grid-template-columns: 280px 1fr; gap: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); overflow: hidden;
+    transition: all 0.3s ease; margin-bottom: 24px;
   }
-
-  /* Prose 스타일 (Markdown 렌더링용) */
-  .prose :global(h2) {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 2.5rem 0 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border);
+  .article-content :global(.review-card:hover) { box-shadow: var(--shadow-lg); border-color: var(--primary); }
+  .article-content :global(.review-card-image) {
+    background: var(--bg-secondary); padding: 32px;
+    display: flex; align-items: center; justify-content: center;
   }
-
-  .prose :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 2rem 0 0.75rem;
+  .article-content :global(.review-card-body) { padding: 28px 32px; }
+  .article-content :global(.review-card-header) { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+  .article-content :global(.review-card-body h3) { font-size: 20px; font-weight: 700; margin-bottom: 4px; border: none; padding: 0; }
+  .article-content :global(.subtitle) { font-size: 14px; color: var(--text-secondary); }
+  .article-content :global(.review-score) {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--primary); color: #fff;
+    padding: 6px 14px; border-radius: var(--radius);
+    font-size: 18px; font-weight: 800; flex-shrink: 0;
   }
-
-  .prose :global(h4) {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text);
-    margin: 1.5rem 0 0.5rem;
+  .article-content :global(.review-score small) { font-size: 12px; font-weight: 500; opacity: 0.8; }
+  .article-content :global(.review-card-specs) {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin: 16px 0; padding: 16px 0;
+    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
   }
-
-  .prose :global(p) {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--text);
-    margin: 0 0 1.25rem;
-  }
-
-  .prose :global(ul),
-  .prose :global(ol) {
-    margin: 0 0 1.25rem;
-    padding-left: 1.5rem;
-  }
-
-  .prose :global(li) {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-  }
-
-  .prose :global(blockquote) {
-    border-left: 4px solid var(--primary);
-    padding: 0.75rem 1.25rem;
-    margin: 1.5rem 0;
-    background: var(--bg-secondary);
-    border-radius: 0 8px 8px 0;
-  }
-
-  .prose :global(blockquote p) {
-    margin: 0;
-  }
-
-  .prose :global(code) {
-    background: var(--bg-secondary);
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    font-size: 0.9em;
-    color: var(--primary);
-  }
-
-  .prose :global(pre) {
-    background: var(--bg-secondary);
-    padding: 1.25rem;
-    border-radius: 8px;
-    overflow-x: auto;
-    margin: 1.5rem 0;
-  }
-
-  .prose :global(pre code) {
-    background: none;
-    padding: 0;
-    color: var(--text);
-  }
-
-  .prose :global(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin: 1.5rem 0;
-  }
-
-  .prose :global(a) {
-    color: var(--primary);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
-  .prose :global(a:hover) {
-    opacity: 0.8;
-  }
-
-  .prose :global(hr) {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2rem 0;
-  }
-
-  .prose :global(table) {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-    font-size: 0.95rem;
-  }
-
-  .prose :global(th),
-  .prose :global(td) {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    text-align: left;
-  }
-
-  .prose :global(th) {
-    background: var(--bg-secondary);
-    font-weight: 600;
-  }
-
-  .prose :global(table td:first-child) {
-    white-space: nowrap;
-  }
-
-  .prose :global(details) {
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    margin: 1rem 0;
-  }
-
-  .prose :global(summary) {
-    font-weight: 600;
-    cursor: pointer;
-  }
+  .article-content :global(.spec) { font-size: 13px; color: var(--text-secondary); }
+  .article-content :global(.spec strong) { color: var(--text); font-weight: 600; }
+  .article-content :global(.pros-cons) { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .article-content :global(.pros-cons h4) { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .article-content :global(.rec-text) { font-size: 14px; color: var(--text-secondary); margin: 12px 0; }
+  .article-content :global(.review-card-actions) { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
 
   @media (max-width: 768px) {
-    .post-header h1 {
-      font-size: 1.5rem;
-    }
+    .article-content :global(.review-card) { grid-template-columns: 1fr; }
+    .article-content :global(.pros-cons) { grid-template-columns: 1fr; }
+  }
 
-    .post-description {
-      font-size: 1rem;
-    }
+  /* Comparison Table */
+  .article-content :global(.comparison-table-wrapper) {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-lg); border: 1px solid var(--border);
+    background: var(--bg-card); margin-bottom: 24px;
+  }
+  .article-content :global(.comparison-table) { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .article-content :global(.comparison-table thead) { background: var(--bg-secondary); }
+  .article-content :global(.comparison-table th) {
+    padding: 14px 20px; text-align: left; font-weight: 600;
+    color: var(--text-secondary); font-size: 13px; text-transform: uppercase;
+    letter-spacing: 0.04em; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .article-content :global(.comparison-table td) {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-light); vertical-align: middle;
+  }
+  .article-content :global(.td-product-name) { white-space: nowrap; }
+  .article-content :global(.comparison-table tbody tr) { transition: background var(--transition); }
+  .article-content :global(.comparison-table tbody tr:hover) { background: var(--bg-secondary); }
+  .article-content :global(.comparison-table tbody tr:last-child td) { border-bottom: none; }
+  .article-content :global(.highlight-row) { background: #fffbeb; border-left: 3px solid var(--accent); }
+  .article-content :global(.highlight-row:hover) { background: #fef9e7 !important; }
+  :global(html.dark) .article-content :global(.highlight-row) { background: rgba(251,191,36,0.12); }
+  :global(html.dark) .article-content :global(.highlight-row:hover) { background: rgba(251,191,36,0.18) !important; }
+  .article-content :global(.product-cell) { display: flex; align-items: center; gap: 12px; font-weight: 600; white-space: nowrap; }
+  .article-content :global(.product-thumb) {
+    width: 48px; height: 48px; background: var(--bg-secondary);
+    border-radius: var(--radius); display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; font-size: 20px;
+  }
+  .article-content :global(.best-badge) {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--accent), #f97316);
+    color: #fff; font-size: 11px; font-weight: 700; margin-left: 8px;
+  }
 
-    .post-meta {
-      flex-wrap: wrap;
-    }
+  /* FAQ */
+  .article-content :global(.faq-list) { display: flex; flex-direction: column; gap: 12px; padding-bottom: 40px; }
+  .article-content :global(.faq-item) {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+  }
+  .article-content :global(.faq-question) {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px; cursor: pointer; font-size: 16px;
+    font-weight: 600; list-style: none; color: var(--text);
+    transition: background var(--transition);
+  }
+  .article-content :global(.faq-question::-webkit-details-marker) { display: none; }
+  .article-content :global(.faq-question:hover) { background: var(--bg-secondary); }
+  .article-content :global(.arrow) { color: var(--text-light); flex-shrink: 0; transition: transform 0.3s ease; }
+  .article-content :global(.faq-item[open] .arrow) { transform: rotate(180deg); }
+  .article-content :global(.faq-answer-inner) {
+    padding: 0 24px 20px; font-size: 15px; color: var(--text-secondary); line-height: 1.7;
+  }
+
+  /* Sidebar */
+  .sidebar { position: sticky; top: 84px; }
+  .sidebar-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px;
+  }
+  .sidebar-box h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border-light);
+  }
+  .sidebar-toc :global(ul) { display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
+  .sidebar-toc :global(li) { list-style: none; margin: 0; }
+  .sidebar-toc :global(li a) {
+    font-size: 14px; color: var(--text-secondary); display: block;
+    padding: 6px 12px; border-left: 2px solid transparent;
+    border-radius: 0 var(--radius) var(--radius) 0; transition: all var(--transition);
+    text-decoration: none;
+  }
+  .sidebar-toc :global(li a:hover),
+  .sidebar-toc :global(li a.active) {
+    color: var(--primary); background: var(--primary-light); border-left-color: var(--primary);
+    font-weight: 600;
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar { display: grid; grid-template-columns: 1fr; gap: 20px; position: static; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { position: static; }
   }
 </style>
+
+<script>
+  // Auto-generate TOC from article headings
+  function buildToc() {
+    const content = document.querySelector('.article-content');
+    const tocList = document.getElementById('toc-list');
+    if (!content || !tocList) return;
+
+    const headings = content.querySelectorAll('h2[id], h3[id]');
+    if (headings.length === 0) {
+      // Fallback: find all h2 and h3 and add IDs
+      const allHeadings = content.querySelectorAll('h2, h3');
+      allHeadings.forEach((h, idx) => {
+        if (!h.id) {
+          h.id = 'section-' + idx;
+        }
+      });
+      // Re-query with IDs
+      const withIds = content.querySelectorAll('h2[id], h3[id]');
+      withIds.forEach(h => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim();
+        a.setAttribute('aria-label', '목차: ' + h.textContent.trim());
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+    } else {
+      headings.forEach(h => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim();
+        a.setAttribute('aria-label', '목차: ' + h.textContent.trim());
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+    }
+
+    // Scroll-based active tracking
+    const tocLinks = tocList.querySelectorAll('a');
+    if (tocLinks.length === 0) return;
+
+    const sectionIds = Array.from(tocLinks).map(link => link.getAttribute('href').replace('#', ''));
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    function updateActive() {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      if (scrollY + viewportHeight >= docHeight - 10) {
+        tocLinks.forEach(link => link.classList.remove('active'));
+        tocLinks[tocLinks.length - 1]?.classList.add('active');
+        return;
+      }
+
+      let currentId = '';
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 120) {
+          currentId = section.id;
+        }
+      }
+
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+      });
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  buildToc();
+</script>
