@@ -136,17 +136,32 @@ async function scheduledSync() {
 async function webhookSync() {
   console.log('🪝 웹훅 모드: Make에서 전달받은 페이지 처리\n');
 
-  if (!PAGE_ID || !PAGE_STATUS) {
-    console.error('❌ PAGE_ID 또는 PAGE_STATUS가 전달되지 않았습니다.');
+  if (!PAGE_ID) {
+    console.error('❌ PAGE_ID가 전달되지 않았습니다.');
     process.exit(1);
   }
 
   console.log(`📄 페이지 ID: ${PAGE_ID}`);
-  console.log(`📊 상태: ${PAGE_STATUS}\n`);
+
+  // PAGE_STATUS가 없으면 Notion에서 직접 조회
+  let status = PAGE_STATUS;
+  if (!status) {
+    console.log('📡 PAGE_STATUS 미전달 → Notion에서 상태 조회 중...');
+    const page = await getPageById(PAGE_ID);
+    if (!page) {
+      console.error('❌ 페이지를 찾을 수 없습니다.');
+      process.exit(1);
+    }
+    const props = extractPageProperties(page);
+    status = props.status;
+    console.log(`📊 Notion 조회 결과 상태: ${status}`);
+  }
+
+  console.log(`📊 상태: ${status}\n`);
 
   const publishedHistory = loadPublishedHistory();
 
-  if (PAGE_STATUS === 'Published') {
+  if (status === 'Published') {
     // Published: 즉시 업로드/덮어쓰기 (Date 무관)
     console.log('📝 Published 상태 → 업로드/덮어쓰기\n');
 
@@ -206,7 +221,7 @@ async function webhookSync() {
 
     console.log(`  ✅ 업로드 완료: ${props.category}/${props.slug}\n`);
 
-  } else if (PAGE_STATUS === 'Deleted') {
+  } else if (status === 'Deleted') {
     // Deleted: 해당 페이지 삭제
     console.log('🗑️ Deleted 상태 → 페이지 삭제\n');
 
@@ -237,7 +252,7 @@ async function webhookSync() {
     console.log(`  ✅ 삭제 완료: ${category}/${slug}\n`);
 
   } else {
-    console.log(`⏭️ ${PAGE_STATUS} 상태는 무시합니다.`);
+    console.log(`⏭️ ${status} 상태는 무시합니다.`);
   }
 }
 
