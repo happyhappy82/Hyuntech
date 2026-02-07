@@ -103,3 +103,75 @@ export function getContentByCategory(category: Category): ContentItem[] {
 export function getContentByType(category: Category, type: ContentType): ContentItem[] {
   return contentItems.filter((item) => item.category === category && item.contentType === type);
 }
+
+/**
+ * Notion 콘텐츠 컬렉션의 글을 ContentItem 형태로 변환
+ * 카테고리 목록 페이지에서 Notion 글도 함께 표시할 때 사용
+ */
+export function notionPostToContentItem(post: {
+  data: {
+    title: string;
+    description: string;
+    category: Category;
+    contentType: ContentType;
+    slug: string;
+    date: string;
+    readTime: string;
+    featured: boolean;
+  };
+}): ContentItem {
+  const cat = post.data.category;
+  return {
+    slug: post.data.slug,
+    title: post.data.title,
+    description: post.data.description,
+    category: cat,
+    contentType: post.data.contentType,
+    date: post.data.date,
+    readTime: post.data.readTime,
+    featured: post.data.featured,
+    emoji: categoryMeta[cat].emoji,
+  };
+}
+
+/**
+ * 하드코딩 글 + Notion 글을 합쳐서 반환 (날짜 역순)
+ */
+export function mergeWithNotionPosts(
+  category: Category,
+  notionPosts: Array<{
+    data: {
+      title: string;
+      description: string;
+      category: Category;
+      contentType: ContentType;
+      slug: string;
+      date: string;
+      readTime: string;
+      featured: boolean;
+    };
+  }>
+): ContentItem[] {
+  const hardcoded = getContentByCategory(category);
+  const fromNotion = notionPosts
+    .filter((p) => p.data.category === category)
+    .map(notionPostToContentItem);
+
+  return [...hardcoded, ...fromNotion].sort((a, b) => {
+    return b.date.localeCompare(a.date);
+  });
+}
+
+/**
+ * Notion 글의 href 경로 (기존 글과 구분)
+ */
+export function getNotionPostHref(item: ContentItem): string {
+  return `/posts/${item.category}/${item.slug}/`;
+}
+
+/**
+ * 기존 하드코딩 글의 href 경로
+ */
+export function getHardcodedPostHref(item: ContentItem): string {
+  return `/category/${item.category}/${item.slug}/`;
+}

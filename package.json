@@ -5,9 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "setup": "node scripts/setup.cjs",
+    "sync": "node scripts/sync-notion.cjs",
+    "submit-sitemap": "node scripts/submit-sitemap.cjs"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.15",
     "astro": "^5.0.0"
   }
 }

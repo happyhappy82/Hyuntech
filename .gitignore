@@ -2,3 +2,5 @@ node_modules
 dist
 .vercel
 .astro
+scripts/.sync-cache.json
+.env
