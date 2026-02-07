@@ -5,7 +5,9 @@ import type { APIContext } from 'astro';
 export async function GET(context: APIContext) {
   const posts = await getCollection('posts');
 
-  const sortedPosts = posts.sort((a, b) =>
+  const validPosts = posts.filter((post) => post.data.title && post.data.date);
+
+  const sortedPosts = validPosts.sort((a, b) =>
     new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   );
 
@@ -16,7 +18,7 @@ export async function GET(context: APIContext) {
     items: sortedPosts.map((post) => ({
       title: post.data.title,
       pubDate: new Date(post.data.date),
-      description: post.data.description,
+      description: post.data.description || post.data.title,
       link: `/category/${post.data.category}/${post.data.slug}/`,
     })),
     customData: '<language>ko</language>',
