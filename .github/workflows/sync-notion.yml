@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '0 4 * * *'    # 매일 13:00 KST (04:00 UTC)
     - cron: '0 9 * * *'    # 매일 18:00 KST (09:00 UTC)
-  workflow_dispatch:          # 수동 실행
   repository_dispatch:        # Make.com 웹훅
     types: [notion-sync]
 
@@ -38,9 +37,6 @@ jobs:
             echo "PAGE_ID=${{ github.event.client_payload.page_id }}" >> $GITHUB_ENV
             echo "PAGE_STATUS=${{ github.event.client_payload.page_status }}" >> $GITHUB_ENV
             echo "commit_msg=chore: webhook sync - ${{ github.event.client_payload.page_status }} page ${{ github.event.client_payload.page_id }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "SYNC_MODE=manual" >> $GITHUB_ENV
-            echo "commit_msg=chore: manual sync from Notion" >> $GITHUB_OUTPUT
           fi
 
       - name: Sync from Notion
