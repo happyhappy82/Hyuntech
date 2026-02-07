@@ -29,7 +29,7 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
       <h3>목차</h3>
       <ul>
         {toc.map(item => (
-          <li><a href={item.href}>{item.label}</a></li>
+          <li><a href={item.href} aria-label={`목차: ${item.label}`}>{item.label}</a></li>
         ))}
       </ul>
     </div>
@@ -40,11 +40,11 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
       <h3>오늘의 최저가</h3>
       <div class="price">{ctaPrice}</div>
       {ctaPriceNote && <div class="price-note">{ctaPriceNote}</div>}
-      <a href="#" class="cta-btn" data-product={ctaProduct} data-store={ctaStore} style="width:100%;margin-bottom:8px;">쿠팡 최저가 보기</a>
+      <a href="#" class="cta-btn" data-product={ctaProduct} data-store={ctaStore} style="width:100%;margin-bottom:8px;" rel="nofollow noopener" target="_blank">쿠팡 최저가 보기</a>
       {sellers && sellers.length > 0 && (
         <div class="seller-links">
           {sellers.map(s => (
-            <a href="#" class="seller-link" data-product={s.productId} data-store={s.store}>
+            <a href="#" class="seller-link" data-product={s.productId} data-store={s.store} rel="nofollow noopener" target="_blank">
               <span>{s.label}</span>
               <span class="price-tag">{s.price}</span>
             </a>
@@ -60,6 +60,10 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
   .sidebar-box {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { position: static; }
   }
   .sidebar-box h3 {
     font-size: 15px; font-weight: 700; margin-bottom: 16px;
@@ -94,10 +98,10 @@ const { toc, ctaProduct, ctaPrice, ctaStore = 'coupang', ctaPriceNote, sellers }
   .price-tag { font-weight: 700; color: var(--accent); }
 
   @media (max-width: 1024px) {
-    .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   }
   @media (max-width: 768px) {
-    .sidebar { grid-template-columns: 1fr; }
+    .sidebar { grid-template-columns: 1fr; position: static; }
   }
 </style>
 

@@ -11,6 +11,26 @@ interface Props {
 }
 
 const { href, emoji, contentType, title, description, date, readTime, featured } = Astro.props;
+
+// Format date to YYYY-MM-DD for display and ISO for datetime
+const formatDateDisplay = (dateStr: string) => {
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) {
+    return d.toISOString().split('T')[0]; // YYYY-MM-DD
+  }
+  return dateStr;
+};
+
+const formatDateISO = (dateStr: string) => {
+  const d = new Date(dateStr);
+  if (!isNaN(d.getTime())) {
+    return d.toISOString();
+  }
+  return dateStr;
+};
+
+const displayDate = formatDateDisplay(date);
+const isoDate = formatDateISO(date);
 ---
 
 <a href={href} class:list={['content-card', { featured }]}>
@@ -20,7 +40,7 @@ const { href, emoji, contentType, title, description, date, readTime, featured }
     <h3>{title}</h3>
     <p>{description}</p>
     <div class="content-meta">
-      <span>{date} 업데이트</span>
+      <time datetime={isoDate}>{displayDate} 업데이트</time>
       <span class="dot-sep"></span>
       <span>{readTime} 읽기</span>
     </div>
@@ -53,6 +73,7 @@ const { href, emoji, contentType, title, description, date, readTime, featured }
   }
   .content-card-image {
     height: 160px;
+    min-height: 160px;
     background: var(--bg-secondary);
     display: flex;
     align-items: center;

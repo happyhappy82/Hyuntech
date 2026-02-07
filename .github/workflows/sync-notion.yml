@@ -27,10 +27,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync from Notion
+      - name: Sync from Notion (Scheduled)
+        if: github.event_name == 'schedule'
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          SYNC_MODE: scheduled
+        run: npm run sync
+
+      - name: Sync from Notion (Webhook)
+        if: github.event_name == 'repository_dispatch'
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          SYNC_MODE: webhook
+          PAGE_ID: ${{ github.event.client_payload.page_id }}
+          PAGE_STATUS: ${{ github.event.client_payload.status }}
+        run: npm run sync
+
+      - name: Sync from Notion (Manual)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          SYNC_MODE: manual
         run: npm run sync
 
       - name: Check for changes

@@ -53,6 +53,53 @@ async function getPublishedPages() {
 }
 
 /**
+ * Status="Published" AND Date가 현재 시간보다 과거인 페이지 조회
+ */
+async function getPublishedPagesBeforeNow() {
+  const now = new Date();
+  const pages = [];
+  let cursor = undefined;
+
+  do {
+    const response = await notion.databases.query({
+      database_id: NOTION_DATABASE_ID,
+      filter: {
+        and: [
+          {
+            property: 'Status',
+            status: { equals: 'Published' },
+          },
+          {
+            property: 'Date',
+            date: { on_or_before: now.toISOString() },
+          },
+        ],
+      },
+      sorts: [{ property: 'Date', direction: 'ascending' }], // 오래된 것부터
+      start_cursor: cursor,
+    });
+
+    pages.push(...response.results);
+    cursor = response.has_more ? response.next_cursor : undefined;
+  } while (cursor);
+
+  return pages;
+}
+
+/**
+ * 특정 page_id로 페이지 조회
+ */
+async function getPageById(pageId) {
+  try {
+    const page = await notion.pages.retrieve({ page_id: pageId });
+    return page;
+  } catch (err) {
+    console.error(`❌ 페이지 조회 실패 (${pageId}):`, err.message);
+    return null;
+  }
+}
+
+/**
  * 페이지의 모든 블록(children) 가져오기 (재귀)
  */
 async function getPageBlocks(pageId) {
@@ -138,6 +185,8 @@ function extractPageProperties(page) {
 module.exports = {
   notion,
   getPublishedPages,
+  getPublishedPagesBeforeNow,
+  getPageById,
   getPageBlocks,
   extractPageProperties,
 };

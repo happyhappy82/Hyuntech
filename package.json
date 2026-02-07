@@ -11,7 +11,13 @@
     "submit-sitemap": "node scripts/submit-sitemap.cjs"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.15",
+    "@astrojs/sitemap": "^3.7.0",
     "@notionhq/client": "^2.2.15",
     "astro": "^5.0.0"
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11"
+  ]
 }

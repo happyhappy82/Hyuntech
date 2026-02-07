@@ -28,7 +28,7 @@ const badgeClass = `badge badge-${badgeType}`;
   {rank && <span class="pick-rank">{rank}</span>}
   <div class="pick-image">
     {image
-      ? <img src={image} alt={name} loading="lazy" width="280" height="200" />
+      ? <img src={image} alt={name} loading="lazy" decoding="async" width="280" height="200" />
       : <div class="product-placeholder">&#128187;</div>
     }
   </div>
@@ -42,7 +42,7 @@ const badgeClass = `badge badge-${badgeType}`;
     </ul>
     <div class="pick-price">{price} <small>~</small></div>
     <div class="pick-actions">
-      <a href="#" class="cta-btn" data-product={productId} data-store={store}>최저가 보기</a>
+      <a href="#" class="cta-btn" data-product={productId} data-store={store} rel="nofollow noopener" target="_blank">최저가 보기</a>
       {reviewUrl && <a href={reviewUrl} class="btn-ghost btn">리뷰 보기</a>}
     </div>
   </div>
@@ -88,8 +88,8 @@ const badgeClass = `badge badge-${badgeType}`;
   .pick-price { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
   .pick-price small { font-size: 13px; font-weight: 500; color: var(--text-light); }
   .pick-actions { display: flex; gap: 8px; }
-  .pick-actions .cta-btn { flex: 1; font-size: 14px; padding: 12px 16px; }
-  .pick-actions .btn-ghost { flex: 0 0 auto; padding: 12px 16px; font-size: 14px; }
+  .pick-actions .cta-btn { flex: 1; font-size: 14px; padding: 12px 16px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
+  .pick-actions .btn-ghost { flex: 0 0 auto; padding: 12px 16px; font-size: 14px; min-height: 48px; display: flex; align-items: center; justify-content: center; }
 
   @media (max-width: 768px) {
     .pick-actions { flex-direction: column; }

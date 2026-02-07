@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="페이지를 찾을 수 없습니다 - HyunTech" noindex={true}>
+  <main class="error-page">
+    <div class="error-container">
+      <div class="error-code">404</div>
+      <h1>페이지를 찾을 수 없습니다</h1>
+      <p>요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.</p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-accent btn-lg">홈으로 돌아가기</a>
+        <a href="/category/laptop/" class="btn btn-outline btn-lg">노트북 추천 보기</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+  .error-container {
+    max-width: 500px;
+  }
+  .error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--primary);
+    opacity: 0.15;
+    margin-bottom: -1rem;
+  }
+  .error-page h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .error-page p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .error-actions .btn {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 480px) {
+    .error-code { font-size: 5rem; }
+    .error-page h1 { font-size: 1.35rem; }
+    .error-actions { flex-direction: column; }
+    .error-actions .btn { width: 100%; }
+  }
+</style>

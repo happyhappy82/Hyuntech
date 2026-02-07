@@ -25,7 +25,9 @@ const { href, emoji, title, description, count, image } = Astro.props;
   .category-card {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: var(--radius-lg); padding: 32px 24px; text-align: center;
-    transition: all 0.3s ease; cursor: pointer; display: block;
+    transition: all 0.3s ease; cursor: pointer; display: flex;
+    flex-direction: column; align-items: center; justify-content: center;
+    min-height: 200px;
   }
   .category-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
   .category-icon {

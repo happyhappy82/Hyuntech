@@ -18,14 +18,83 @@ const catMeta = categoryMeta[category as Category] || { name: category, descript
 const formattedDate = (() => {
   try {
     const d = new Date(date);
-    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   } catch {
     return date;
   }
 })();
+
+const siteUrl = 'https://hyuntech.ai.kr';
+const pageUrl = `${siteUrl}/category/${category}/${Astro.url.pathname.split('/').filter(Boolean).pop()}/`;
+
+// ISO date for Schema.org
+const isoDate = (() => {
+  try {
+    return new Date(date).toISOString();
+  } catch {
+    return date;
+  }
+})();
+
+// Article Schema.org JSON-LD
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "datePublished": isoDate,
+  "dateModified": isoDate,
+  "author": {
+    "@type": "Organization",
+    "name": "HyunTech",
+    "url": siteUrl,
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HyunTech",
+    "url": siteUrl,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/og-default.png`,
+    },
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": pageUrl,
+  },
+});
+
+// BreadcrumbList Schema.org JSON-LD
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "홈",
+      "item": siteUrl,
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": catMeta.name,
+      "item": `${siteUrl}/category/${category}/`,
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+    },
+  ],
+});
 ---
 
-<BaseLayout title={`${title} - HyunTech`} description={description}>
+<BaseLayout title={`${title} - HyunTech`} description={description} ogType="article" datePublished={isoDate} dateModified={isoDate}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={articleSchema} />
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
   <main class="post-page">
     <!-- 브레드크럼 -->
     <nav class="breadcrumb">
@@ -52,7 +121,7 @@ const formattedDate = (() => {
             <Fragment set:html={catMeta.emoji} /> {catMeta.name}
           </span>
           <span class="meta-divider">·</span>
-          <span class="meta-item">{formattedDate}</span>
+          <time class="meta-item" datetime={isoDate}>{formattedDate}</time>
           <span class="meta-divider">·</span>
           <span class="meta-item">읽는 시간 {readTime}</span>
         </div>
@@ -296,6 +365,10 @@ const formattedDate = (() => {
   .prose :global(th) {
     background: var(--bg-secondary);
     font-weight: 600;
+  }
+
+  .prose :global(table td:first-child) {
+    white-space: nowrap;
   }
 
   .prose :global(details) {

@@ -26,7 +26,7 @@ const {
 <div class="review-card">
   <div class="review-card-image">
     {image
-      ? <img src={image} alt={name} loading="lazy" width="280" height="200" />
+      ? <img src={image} alt={name} loading="lazy" decoding="async" width="280" height="200" />
       : <div class="product-placeholder">&#128187;</div>
     }
   </div>
@@ -37,7 +37,7 @@ const {
         <h3>{rank ? `${rank}. ` : ''}{name}</h3>
         <span class="subtitle">{subtitle}</span>
       </div>
-      <div class="review-score">{score} <small>/10</small></div>
+      <div class="review-score" aria-label={`평점 ${score}점 / 10점`}>{score} <small>/10</small></div>
     </div>
     <div class="review-card-specs">
       {specs.map(s => (
@@ -60,7 +60,7 @@ const {
     </div>
     <p class="rec-text"><strong>추천 대상:</strong> {recommendation}</p>
     <div class="review-card-actions">
-      <a href="#" class="cta-btn" data-product={productId} data-store={store}>쿠팡 최저가 보기</a>
+      <a href="#" class="cta-btn" data-product={productId} data-store={store} rel="nofollow noopener" target="_blank">쿠팡 최저가 보기</a>
       {reviewUrl && <a href={reviewUrl} class="btn btn-ghost">상세 리뷰 &rarr;</a>}
     </div>
   </div>

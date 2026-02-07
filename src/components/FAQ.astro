@@ -9,8 +9,27 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+// Strip HTML tags for Schema.org plain text
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').trim();
+}
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": items.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": stripHtml(item.answer),
+    },
+  })),
+});
 ---
 
+<script type="application/ld+json" set:html={faqSchema} />
 <div class="faq-list">
   {items.map(item => (
     <details class="faq-item">

@@ -11,10 +11,42 @@ const comparisonProducts = [
   { name: 'Galaxy Book4 Pro', price: '169만원~', weight: '1.23kg', cpu: 'Intel Ultra 7', battery: '21시간', display: '16" AMOLED', target: '디스플레이', productId: 'galaxy-book4-pro' },
   { name: 'ASUS Zenbook 14 OLED', price: '119만원~', weight: '1.28kg', cpu: 'Intel Ultra 5', battery: '15시간', display: '14" 2.8K OLED', target: '영상/디자인', productId: 'asus-zenbook-14' },
 ];
+
+const siteUrl = 'https://hyuntech.ai.kr';
+
+const websiteSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "HyunTech",
+  "url": siteUrl,
+  "description": "실사용 기반 노트북, 모니터, 태블릿, 오디오 추천 & 비교. 전문가 리뷰와 최저가 비교로 최적의 선택을 도와드립니다.",
+  "inLanguage": "ko",
+  "publisher": {
+    "@type": "Organization",
+    "name": "HyunTech",
+  },
+});
+
+const organizationSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HyunTech",
+  "url": siteUrl,
+  "logo": `${siteUrl}/og-default.png`,
+  "sameAs": [
+    "https://www.youtube.com/@hyuntech",
+  ],
+  "description": "실사용 기반 전자제품 추천 & 비교 사이트",
+});
 ---
 
 <BaseLayout title="HyunTech - 실사용 기반 전자제품 추천 & 비교">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={websiteSchema} />
+    <script type="application/ld+json" set:html={organizationSchema} />
+  </Fragment>
 
+  <main>
   <!-- Hero -->
   <section class="hero">
     <div class="container">
@@ -154,14 +186,15 @@ const comparisonProducts = [
       <div class="newsletter">
         <h2>새로운 추천 & 비교글 알림 받기</h2>
         <p>신제품 출시와 최신 추천 업데이트를 이메일로 받아보세요.</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="이메일 주소를 입력하세요" required>
+        <form class="newsletter-form" aria-label="뉴스레터 구독">
+          <input type="email" placeholder="이메일 주소를 입력하세요" required aria-label="이메일 주소">
           <button type="submit" class="btn btn-accent btn-lg">구독하기</button>
         </form>
       </div>
     </div>
   </section>
 
+  </main>
 </BaseLayout>
 
 <style>
@@ -218,6 +251,25 @@ const comparisonProducts = [
   .popular-card-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
   .popular-card-body .meta { font-size: 12px; color: var(--text-light); margin-top: 12px; }
 
+  /* Newsletter */
+  .newsletter {
+    background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+    border-radius: var(--radius-xl); padding: 48px 40px; text-align: center;
+    color: #fff; min-height: 240px; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+  }
+  .newsletter h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #fff; }
+  .newsletter p { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 24px; max-width: 500px; }
+  .newsletter-form { display: flex; gap: 12px; max-width: 500px; width: 100%; }
+  .newsletter-form input {
+    flex: 1; padding: 14px 20px; border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+    color: #fff; font-size: 15px; min-height: 48px;
+  }
+  .newsletter-form input::placeholder { color: rgba(255,255,255,0.6); }
+  .newsletter-form input:focus { outline: none; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); }
+  .newsletter-form button { flex-shrink: 0; min-height: 48px; }
+
   @media (max-width: 1024px) {
     .top-picks { grid-template-columns: repeat(2, 1fr); }
   }
@@ -229,6 +281,10 @@ const comparisonProducts = [
     .top-picks { grid-template-columns: 1fr; }
     .category-grid { grid-template-columns: repeat(2, 1fr); }
     .popular-grid { grid-template-columns: 1fr; }
+    .newsletter { padding: 36px 24px; }
+    .newsletter h2 { font-size: 22px; }
+    .newsletter p { font-size: 14px; }
+    .newsletter-form { flex-direction: column; }
   }
   @media (max-width: 480px) {
     .hero h1 { font-size: 26px; }

@@ -1,27 +1,187 @@
 const fs = require('fs');
 const path = require('path');
-const { getPublishedPages, getPageBlocks, extractPageProperties } = require('./lib/notion-client.cjs');
+const {
+  getPublishedPages,
+  getPublishedPagesBeforeNow,
+  getPageById,
+  getPageBlocks,
+  extractPageProperties
+} = require('./lib/notion-client.cjs');
 const { blocksToMarkdown } = require('./lib/notion-to-markdown.cjs');
 const { downloadImages, removeImages } = require('./lib/image-downloader.cjs');
 const { generateFrontmatter } = require('./lib/frontmatter.cjs');
 
 const POSTS_DIR = path.join(__dirname, '../src/content/posts');
 const CACHE_FILE = path.join(__dirname, '.sync-cache.json');
+const PUBLISHED_FILE = path.join(__dirname, '.sync-published.json');
+
+// 환경변수로 모드 결정
+const SYNC_MODE = process.env.SYNC_MODE || 'manual'; // scheduled | webhook | manual
+const PAGE_ID = process.env.PAGE_ID; // webhook 모드에서 사용
+const PAGE_STATUS = process.env.PAGE_STATUS; // webhook 모드에서 사용
 
 async function main() {
-  console.log('🔄 Notion 동기화 시작...\n');
+  console.log(`🔄 Notion 동기화 시작... (모드: ${SYNC_MODE})\n`);
 
-  // 1. 캐시 로드
+  if (SYNC_MODE === 'scheduled') {
+    await scheduledSync();
+  } else if (SYNC_MODE === 'webhook') {
+    await webhookSync();
+  } else {
+    await manualSync();
+  }
+
+  console.log('\n✅ Notion 동기화 완료!');
+}
+
+/**
+ * A. 예약 발행 (Cron - 하루 2회)
+ */
+async function scheduledSync() {
+  console.log('📅 예약 발행 모드: Date가 과거인 Published 글 중 1개만 발행\n');
+
+  // 발행 이력 로드
+  const publishedHistory = loadPublishedHistory();
+
+  // Status=Published AND Date <= now 조회 (오래된 것부터)
+  const pages = await getPublishedPagesBeforeNow();
+  console.log(`📄 Notion에서 ${pages.length}개의 발행 대상 페이지 발견\n`);
+
+  // 이미 발행된 페이지 제외
+  const unpublishedPages = pages.filter((page) => !publishedHistory.publishedPages[page.id]);
+
+  if (unpublishedPages.length === 0) {
+    console.log('✅ 발행할 새 글이 없습니다.');
+    return;
+  }
+
+  console.log(`📝 미발행 글 ${unpublishedPages.length}개 중 1개를 발행합니다.\n`);
+
+  // 가장 오래된 1개만 발행
+  const page = unpublishedPages[0];
+  const props = extractPageProperties(page);
+
+  if (!props.slug || !props.category) {
+    console.warn(`⚠️ Slug 또는 Category 누락: "${props.title}" - 건너뜀`);
+    return;
+  }
+
+  console.log(`📝 발행 중: ${props.title} (Date: ${props.date})`);
+
+  // 콘텐츠 생성 및 저장
+  await savePageContent(page, props);
+
+  // 발행 이력에 추가
+  publishedHistory.publishedPages[props.notionId] = {
+    slug: props.slug,
+    category: props.category,
+    publishedAt: new Date().toISOString(),
+  };
+  savePublishedHistory(publishedHistory);
+
+  console.log(`  ✅ 발행 완료: ${props.category}/${props.slug}\n`);
+}
+
+/**
+ * B. 웹훅 발행 (repository_dispatch - Make에서 호출)
+ */
+async function webhookSync() {
+  console.log('🪝 웹훅 모드: Make에서 전달받은 페이지 처리\n');
+
+  if (!PAGE_ID || !PAGE_STATUS) {
+    console.error('❌ PAGE_ID 또는 PAGE_STATUS가 전달되지 않았습니다.');
+    process.exit(1);
+  }
+
+  console.log(`📄 페이지 ID: ${PAGE_ID}`);
+  console.log(`📊 상태: ${PAGE_STATUS}\n`);
+
+  if (PAGE_STATUS === 'Published') {
+    // Published: 즉시 업로드/덮어쓰기
+    console.log('📝 Published 상태 → 업로드/덮어쓰기\n');
+
+    const page = await getPageById(PAGE_ID);
+    if (!page) {
+      console.error('❌ 페이지를 찾을 수 없습니다.');
+      process.exit(1);
+    }
+
+    const props = extractPageProperties(page);
+
+    if (!props.slug || !props.category) {
+      console.warn(`⚠️ Slug 또는 Category 누락: "${props.title}" - 건너뜀`);
+      return;
+    }
+
+    console.log(`📝 처리 중: ${props.title}`);
+
+    // 콘텐츠 생성 및 저장
+    await savePageContent(page, props);
+
+    // 발행 이력에 추가/업데이트
+    const publishedHistory = loadPublishedHistory();
+    publishedHistory.publishedPages[props.notionId] = {
+      slug: props.slug,
+      category: props.category,
+      publishedAt: new Date().toISOString(),
+    };
+    savePublishedHistory(publishedHistory);
+
+    console.log(`  ✅ 업로드 완료: ${props.category}/${props.slug}\n`);
+
+  } else if (PAGE_STATUS === 'Deleted') {
+    // Deleted: 해당 페이지 삭제
+    console.log('🗑️ Deleted 상태 → 페이지 삭제\n');
+
+    const publishedHistory = loadPublishedHistory();
+    const record = publishedHistory.publishedPages[PAGE_ID];
+
+    if (!record) {
+      console.log('⚠️ 발행 이력에 없는 페이지입니다. 삭제할 파일이 없습니다.');
+      return;
+    }
+
+    const { slug, category } = record;
+    const filePath = path.join(POSTS_DIR, category, `${slug}.md`);
+
+    // 파일 삭제
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log(`🗑️ 파일 삭제: ${category}/${slug}.md`);
+    }
+
+    // 이미지 삭제
+    removeImages(slug);
+    console.log(`🗑️ 이미지 삭제: ${slug}`);
+
+    // 발행 이력에서 제거
+    delete publishedHistory.publishedPages[PAGE_ID];
+    savePublishedHistory(publishedHistory);
+
+    console.log(`  ✅ 삭제 완료: ${category}/${slug}\n`);
+
+  } else {
+    console.log(`⏭️ ${PAGE_STATUS} 상태는 무시합니다.`);
+  }
+}
+
+/**
+ * C. 수동 발행 (workflow_dispatch)
+ */
+async function manualSync() {
+  console.log('👤 수동 발행 모드: 모든 Published 글 동기화 (Date 무관)\n');
+
+  // 캐시 로드
   const cache = loadCache();
 
-  // 2. Notion에서 Published 페이지 조회
+  // Notion에서 Published 페이지 조회
   const pages = await getPublishedPages();
   console.log(`📄 Notion에서 ${pages.length}개의 Published 페이지 발견\n`);
 
-  // 3. 현재 Notion에 있는 slug 목록 (삭제 감지용)
+  // 현재 Notion에 있는 slug 목록 (삭제 감지용)
   const activeSlugMap = new Map();
 
-  // 4. 각 페이지 처리
+  // 각 페이지 처리
   for (const page of pages) {
     const props = extractPageProperties(page);
 
@@ -41,41 +201,52 @@ async function main() {
 
     console.log(`📝 동기화 중: ${props.title}`);
 
-    // 블록 가져오기
-    const blocks = await getPageBlocks(page.id);
-
-    // 이미지 다운로드
-    const imageMap = await downloadImages(blocks, props.slug);
-
-    // Markdown 변환
-    const markdown = blocksToMarkdown(blocks, imageMap);
-
-    // 프론트매터 생성
-    const frontmatter = generateFrontmatter(props);
-
-    // 파일 저장
-    const categoryDir = path.join(POSTS_DIR, props.category);
-    if (!fs.existsSync(categoryDir)) {
-      fs.mkdirSync(categoryDir, { recursive: true });
-    }
-
-    const filePath = path.join(categoryDir, `${props.slug}.md`);
-    fs.writeFileSync(filePath, `${frontmatter}\n\n${markdown}\n`, 'utf-8');
-    console.log(`  ✅ 저장: ${filePath}\n`);
+    // 콘텐츠 생성 및 저장
+    await savePageContent(page, props);
 
     // 캐시 업데이트
     cache[props.notionId] = props.lastEditedTime;
+
+    console.log(`  ✅ 저장 완료\n`);
   }
 
-  // 5. 삭제된 글 감지 및 제거
+  // 삭제된 글 감지 및 제거
   removeDeletedPosts(activeSlugMap, cache);
 
-  // 6. 캐시 저장
+  // 캐시 저장
   saveCache(cache);
-
-  console.log('\n✅ Notion 동기화 완료!');
 }
 
+/**
+ * 페이지 콘텐츠를 생성하고 파일로 저장
+ */
+async function savePageContent(page, props) {
+  // 블록 가져오기
+  const blocks = await getPageBlocks(page.id);
+
+  // 이미지 다운로드
+  const imageMap = await downloadImages(blocks, props.slug);
+
+  // Markdown 변환
+  const markdown = blocksToMarkdown(blocks, imageMap);
+
+  // 프론트매터 생성
+  const frontmatter = generateFrontmatter(props);
+
+  // 파일 저장
+  const categoryDir = path.join(POSTS_DIR, props.category);
+  if (!fs.existsSync(categoryDir)) {
+    fs.mkdirSync(categoryDir, { recursive: true });
+  }
+
+  const filePath = path.join(categoryDir, `${props.slug}.md`);
+  fs.writeFileSync(filePath, `${frontmatter}\n\n${markdown}\n`, 'utf-8');
+  console.log(`  📄 파일 저장: ${props.category}/${props.slug}.md`);
+}
+
+/**
+ * 캐시 파일 로드 (manual 모드에서 사용)
+ */
 function loadCache() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
@@ -85,10 +256,35 @@ function loadCache() {
   return {};
 }
 
+/**
+ * 캐시 파일 저장 (manual 모드에서 사용)
+ */
 function saveCache(cache) {
   fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8');
 }
 
+/**
+ * 발행 이력 파일 로드 (scheduled 모드에서 사용)
+ */
+function loadPublishedHistory() {
+  try {
+    if (fs.existsSync(PUBLISHED_FILE)) {
+      return JSON.parse(fs.readFileSync(PUBLISHED_FILE, 'utf-8'));
+    }
+  } catch {}
+  return { publishedPages: {} };
+}
+
+/**
+ * 발행 이력 파일 저장 (scheduled 모드에서 사용)
+ */
+function savePublishedHistory(history) {
+  fs.writeFileSync(PUBLISHED_FILE, JSON.stringify(history, null, 2), 'utf-8');
+}
+
+/**
+ * 삭제된 글 감지 및 제거 (manual 모드에서 사용)
+ */
 function removeDeletedPosts(activeSlugMap, cache) {
   if (!fs.existsSync(POSTS_DIR)) return;
 
@@ -111,10 +307,7 @@ function removeDeletedPosts(activeSlugMap, cache) {
         removeImages(slug);
         console.log(`🗑️  삭제됨: ${fileKey}`);
 
-        // 캐시에서도 제거
-        for (const [id, time] of Object.entries(cache)) {
-          // 캐시의 notionId로는 slug를 역추적할 수 없으므로 파일 기반으로 처리
-        }
+        // 캐시에서도 제거 (notionId 기반이므로 정확한 매칭 어려움 - 파일 삭제만 처리)
       }
     }
   }
