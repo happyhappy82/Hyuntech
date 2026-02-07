@@ -62,7 +62,7 @@ function collectCtaUrls(blocks) {
     const block = blocks[i];
     if (block.type === 'heading_3') {
       const text = getPlainText(block);
-      const match = text.match(/[🥇🥈🥉]?\s*(\d+)\./);
+      const match = text.match(/[🥇🥈🥉]?\s*(\d+)\./u);
       if (match) currentRank = parseInt(match[1]);
     }
     if (block.type === 'paragraph') {
@@ -259,8 +259,8 @@ function parseTopPicksSection(blocks, startIndex, imageMap, ctaByRank) {
 function parseTopPick(blocks, startIndex, imageMap) {
   const plain = getPlainText(blocks[startIndex]);
   // "🥇 1위: 기가바이트 2025 에어로 X16 라이젠 AI"
-  const nameMatch = plain.match(/[🥇🥈🥉]?\s*\d+위[:\s]*(.*)/);
-  const name = nameMatch ? nameMatch[1].trim() : plain.replace(/[🥇🥈🥉]\s*/, '').trim();
+  const nameMatch = plain.match(/[🥇🥈🥉]?\s*\d+위[:\s]*(.*)/u);
+  const name = nameMatch ? nameMatch[1].trim() : plain.replace(/[🥇🥈🥉]\s*/u, '').trim();
 
   let i = startIndex + 1;
   let badge = '';
@@ -383,7 +383,10 @@ function renderComparisonTable(block) {
   html += `<table class="comparison-table" aria-label="제품 비교표">\n`;
   html += `<thead><tr>\n`;
   for (const h of headers) {
-    html += `<th scope="col">${escapeHtml(h.replace(/\*\*/g, ''))}</th>\n`;
+    let headerText = h.replace(/\*\*/g, '');
+    // CTA 헤더를 "최저가"로 변환
+    if (/^CTA$/i.test(headerText.trim())) headerText = '최저가';
+    html += `<th scope="col">${escapeHtml(headerText)}</th>\n`;
   }
   html += `</tr></thead>\n`;
   html += `<tbody>\n`;
@@ -400,7 +403,7 @@ function renderComparisonTable(block) {
       let cell = row[ci].replace(/\*\*/g, '');
       if (ci === 0) {
         // 제품명 셀 - 아이콘 + 이름
-        const cleanName = cell.replace(/[🥇🥈🥉]\s*/, '').trim();
+        const cleanName = cell.replace(/[🥇🥈🥉]\s*/u, '').trim();
         html += `<td class="td-product-name"><div class="product-cell">`;
         html += `<div class="product-thumb">💻</div>`;
         html += escapeHtml(cleanName);
@@ -441,7 +444,7 @@ function parseReviewsSection(blocks, startIndex, imageMap) {
     // heading_3 (#### 🥇 N. 제품명) → 리뷰 카드
     if (block.type === 'heading_3') {
       const text = getPlainText(block);
-      if (/[🥇🥈🥉]?\s*\d+\./.test(text) || /^\d+\./.test(text)) {
+      if (/[🥇🥈🥉]?\s*\d+\./u.test(text) || /^\d+\./.test(text)) {
         const result = parseReviewCard(blocks, i, imageMap);
         reviews.push(result.review);
         i = result.nextIndex;
@@ -469,9 +472,9 @@ function parseReviewsSection(blocks, startIndex, imageMap) {
 function parseReviewCard(blocks, startIndex, imageMap) {
   const titlePlain = getPlainText(blocks[startIndex]);
   // "🥇 1. 기가바이트 2025 에어로 X16 라이젠 AI 라이젠 AI 300 시리즈"
-  const rankMatch = titlePlain.match(/[🥇🥈🥉]?\s*(\d+)\.\s*(.*)/);
+  const rankMatch = titlePlain.match(/[🥇🥈🥉]?\s*(\d+)\.\s*(.*)/u);
   const rank = rankMatch ? parseInt(rankMatch[1]) : 0;
-  const name = rankMatch ? rankMatch[2].trim() : titlePlain.replace(/[🥇🥈🥉]\s*/, '').trim();
+  const name = rankMatch ? rankMatch[2].trim() : titlePlain.replace(/[🥇🥈🥉]\s*/u, '').trim();
 
   let i = startIndex + 1;
   let badge = '';
@@ -509,7 +512,7 @@ function parseReviewCard(blocks, startIndex, imageMap) {
         continue;
       }
       // 새 리뷰 (숫자. 패턴)
-      if (/[🥇🥈🥉]?\s*\d+\./.test(text) || /^\d+\./.test(text)) break;
+      if (/[🥇🥈🥉]?\s*\d+\./u.test(text) || /^\d+\./.test(text)) break;
     }
 
     if (block.type === 'divider') {
