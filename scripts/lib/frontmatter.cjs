@@ -9,7 +9,7 @@ function generateFrontmatter(properties) {
   lines.push(`category: "${properties.category}"`);
   lines.push(`contentType: "${escapeYaml(properties.contentType)}"`);
   lines.push(`slug: "${properties.slug}"`);
-  lines.push(`date: "${properties.date || properties.lastEditedTime?.split('T')[0] || new Date().toISOString().split('T')[0]}"`);
+  lines.push(`date: "${properties.date}"`);
   lines.push(`readTime: "${properties.readTime}"`);
   lines.push(`featured: ${properties.featured}`);
   lines.push(`notionId: "${properties.notionId}"`);
