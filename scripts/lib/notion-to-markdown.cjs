@@ -429,15 +429,16 @@ function parseReviewCard(blocks, startIndex, imageMap) {
     if (block.type === 'heading_2') break;
     if (block.type === 'heading_3') {
       const text = getPlainText(block);
-      // ✓ 장점 / ✕ 단점 헤딩은 이 리뷰에 속함
-      if (text.includes('✓') && text.includes('장점')) {
+      // 장점 / 단점 헤딩 감지 (✓/✕ 마크 있든 없든)
+      const trimmedH3 = text.replace(/^#{1,4}\s*/, '').trim();
+      if (/^(✓\s*)?장점[:：]?\s*$/.test(trimmedH3)) {
         inPros = true;
         inCons = false;
         inSpecs = false;
         i++;
         continue;
       }
-      if (text.includes('✕') && text.includes('단점')) {
+      if (/^(✕\s*)?단점[:：]?\s*$/.test(trimmedH3)) {
         inCons = true;
         inPros = false;
         inSpecs = false;
@@ -456,17 +457,23 @@ function parseReviewCard(blocks, startIndex, imageMap) {
 
     const text = getPlainText(block);
 
+    // "---" 텍스트를 가진 paragraph도 구분선으로 처리
+    if (block.type === 'paragraph' && text.trim() === '---') {
+      i++;
+      break;
+    }
+
     if (block.type === 'paragraph') {
-      // paragraph에서도 ✓ 장점 / ✕ 단점 감지 (Notion API가 heading_3 대신 paragraph으로 보내는 경우)
-      const cleanedText = text.replace(/^#{1,4}\s*/, '');
-      if (cleanedText.includes('✓') && cleanedText.includes('장점')) {
+      // 장점 / 단점 감지 (✓/✕ 마크 있든 없든, heading_3/paragraph 모두)
+      const cleanedText = text.replace(/^#{1,4}\s*/, '').trim();
+      if (/^(✓\s*)?장점[:：]?\s*$/.test(cleanedText)) {
         inPros = true;
         inCons = false;
         inSpecs = false;
         i++;
         continue;
       }
-      if (cleanedText.includes('✕') && cleanedText.includes('단점')) {
+      if (/^(✕\s*)?단점[:：]?\s*$/.test(cleanedText)) {
         inCons = true;
         inPros = false;
         inSpecs = false;
