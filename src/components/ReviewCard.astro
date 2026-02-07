@@ -24,94 +24,252 @@ const {
 ---
 
 <div class="review-card">
-  <div class="review-card-image">
-    {image
-      ? <img src={image} alt={name} loading="lazy" decoding="async" width="280" height="200" />
-      : <div class="product-placeholder">&#128187;</div>
-    }
+  <div class="review-card-top">
+    {badge && <span class={`badge badge-${badgeType}`}>{badge}</span>}
+    <div class="review-score" aria-label={`평점 ${score}점 / 10점`}>
+      <span class="score-num">{score}</span><span class="score-total">/10</span>
+    </div>
   </div>
-  <div class="review-card-body">
-    <div class="review-card-header">
-      <div>
-        {badge && <span class={`badge badge-${badgeType}`} style="margin-bottom:8px;display:inline-block;">{badge}</span>}
-        <h3>{rank ? `${rank}. ` : ''}{name}</h3>
-        <span class="subtitle">{subtitle}</span>
-      </div>
-      <div class="review-score" aria-label={`평점 ${score}점 / 10점`}>{score} <small>/10</small></div>
+
+  <h3 class="review-title">{rank ? `${rank}. ` : ''}{name}</h3>
+  <p class="review-subtitle">{subtitle}</p>
+
+  <div class="review-card-specs">
+    {specs.map(s => (
+      <span class="spec"><strong>{s.label}:</strong> {s.value}</span>
+    ))}
+  </div>
+
+  <div class="review-card-middle">
+    <div class="review-card-image">
+      {image
+        ? <img src={image} alt={name} loading="lazy" decoding="async" width="280" height="200" />
+        : <div class="product-placeholder">&#128187;</div>
+      }
     </div>
-    <div class="review-card-specs">
-      {specs.map(s => (
-        <span class="spec"><strong>{s.label}:</strong> {s.value}</span>
-      ))}
-    </div>
-    <div class="pros-cons">
-      <div>
-        <h4 style="color:#166534;">장점</h4>
-        <ul class="pick-pros">
-          {pros.map(p => <li>{p}</li>)}
+    <div class="pros-cons-area">
+      <div class="pros-section">
+        <h4 class="pros-title">장점</h4>
+        <ul class="pros-list">
+          {pros.map(p => <li><span class="icon-check">&#10003;</span> {p}</li>)}
         </ul>
       </div>
-      <div>
-        <h4 style="color:#991b1b;">단점</h4>
-        <ul class="pick-pros pick-cons">
-          {cons.map(c => <li>{c}</li>)}
+      <div class="cons-section">
+        <h4 class="cons-title">단점</h4>
+        <ul class="cons-list">
+          {cons.map(c => <li><span class="icon-x">&#10005;</span> {c}</li>)}
         </ul>
       </div>
     </div>
-    <p class="rec-text"><strong>추천 대상:</strong> {recommendation}</p>
-    <div class="review-card-actions">
-      <a href="#" class="cta-btn" data-product={productId} data-store={store} rel="nofollow noopener" target="_blank">쿠팡 최저가 보기</a>
-      {reviewUrl && <a href={reviewUrl} class="btn btn-ghost">상세 리뷰 &rarr;</a>}
-    </div>
+  </div>
+
+  <p class="rec-text"><strong>추천 대상:</strong> {recommendation}</p>
+
+  <div class="review-card-actions">
+    <a href="#" class="cta-btn" data-product={productId} data-store={store} rel="nofollow noopener" target="_blank">쿠팡 최저가 보기</a>
+    {reviewUrl && <a href={reviewUrl} class="btn btn-ghost">상세 리뷰 &rarr;</a>}
   </div>
 </div>
 
 <style>
   .review-card {
-    display: grid; grid-template-columns: 280px 1fr; gap: 0;
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius-xl); overflow: hidden;
-    transition: all 0.3s ease; margin-bottom: 24px;
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 28px;
+    transition: all 0.3s ease;
   }
-  .review-card:hover { box-shadow: var(--shadow-lg); border-color: var(--primary); }
+  .review-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary, #2563eb);
+  }
+
+  /* 상단: 배지 + 점수 */
+  .review-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .review-score {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    background: #1e293b;
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .score-num {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .score-total {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+
+  /* 제목 / 부제 */
+  .review-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text, #1e293b);
+    margin: 0 0 4px;
+  }
+  .review-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary, #64748b);
+    margin: 0;
+  }
+
+  /* 스펙 한 줄 */
+  .review-card-specs {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 16px 0;
+    margin: 16px 0 20px;
+    border-top: 1px solid var(--border-light, #f1f5f9);
+    border-bottom: 1px solid var(--border-light, #f1f5f9);
+  }
+  .spec {
+    font-size: 14px;
+    color: var(--text-secondary, #64748b);
+  }
+  .spec strong {
+    color: var(--text, #1e293b);
+    font-weight: 600;
+  }
+
+  /* 중간: 이미지 + 장단점 */
+  .review-card-middle {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    margin-bottom: 20px;
+    align-items: start;
+  }
+
   .review-card-image {
-    background: var(--bg-secondary); padding: 32px;
-    display: flex; align-items: center; justify-content: center;
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+  }
+  .review-card-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
   }
   .product-placeholder {
-    width: 200px; height: 150px; background: var(--border);
-    border-radius: var(--radius); display: flex; align-items: center;
-    justify-content: center; color: var(--text-light); font-size: 48px;
+    font-size: 56px;
+    opacity: 0.4;
+    filter: grayscale(1);
   }
-  .review-card-body { padding: 28px 32px; }
-  .review-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
-  .review-card-body h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { font-size: 14px; color: var(--text-secondary); }
-  .review-score {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--primary); color: #fff;
-    padding: 6px 14px; border-radius: var(--radius);
-    font-size: 18px; font-weight: 800; flex-shrink: 0;
-  }
-  .review-score small { font-size: 12px; font-weight: 500; opacity: 0.8; }
-  .review-card-specs {
-    display: flex; gap: 16px; flex-wrap: wrap;
-    margin: 16px 0; padding: 16px 0;
-    border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
-  }
-  .spec { font-size: 13px; color: var(--text-secondary); }
-  .spec strong { color: var(--text); font-weight: 600; }
-  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
-  .pros-cons h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-  .pick-pros { display: flex; flex-direction: column; gap: 4px; }
-  .pick-pros li { font-size: 13px; display: flex; gap: 6px; list-style: none; }
-  .pick-pros li::before { content: '\2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
-  .pick-cons li::before { content: '\2715'; color: var(--danger); font-weight: 700; }
-  .rec-text { font-size: 14px; color: var(--text-secondary); margin: 12px 0; }
-  .review-card-actions { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
 
+  /* 장단점 2열 */
+  .pros-cons-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .pros-title {
+    color: #16a34a;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+  .cons-title {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  .pros-list,
+  .cons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pros-list li,
+  .cons-list li {
+    font-size: 14px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: var(--text, #1e293b);
+    line-height: 1.5;
+  }
+  .icon-check {
+    color: #16a34a;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+  .icon-x {
+    color: #dc2626;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+
+  /* 추천 대상 */
+  .rec-text {
+    font-size: 14px;
+    color: var(--text-secondary, #64748b);
+    line-height: 1.7;
+    margin: 0 0 24px;
+  }
+  .rec-text strong {
+    color: var(--text, #1e293b);
+  }
+
+  /* 버튼 */
+  .review-card-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  /* 반응형 */
+  @media (max-width: 900px) {
+    .review-card-middle {
+      grid-template-columns: 200px 1fr;
+      gap: 20px;
+    }
+  }
   @media (max-width: 768px) {
-    .review-card { grid-template-columns: 1fr; }
-    .pros-cons { grid-template-columns: 1fr; }
+    .review-card {
+      padding: 24px 20px;
+    }
+    .review-card-middle {
+      grid-template-columns: 1fr;
+    }
+    .review-card-image {
+      max-width: 280px;
+    }
+    .pros-cons-area {
+      grid-template-columns: 1fr;
+    }
+    .review-title {
+      font-size: 18px;
+    }
+    .review-card-specs {
+      gap: 12px;
+    }
   }
 </style>
