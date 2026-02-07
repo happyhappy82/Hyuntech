@@ -166,7 +166,7 @@ export function mergeWithNotionPosts(
  * Notion 글의 href 경로 (기존 글과 구분)
  */
 export function getNotionPostHref(item: ContentItem): string {
-  return `/posts/${item.category}/${item.slug}/`;
+  return `/category/${item.category}/${item.slug}/`;
 }
 
 /**
