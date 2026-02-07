@@ -9,8 +9,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Hyun<span>Tech</span>
+          <img src="/images/logo.png" alt="HyunTech" class="footer-logo-img" width="140" height="36" />
         </div>
         <p>실사용 경험과 데이터 기반 분석으로<br>최적의 전자제품 선택을 도와드립니다.</p>
         <a href="https://www.youtube.com/@hyuntech" target="_blank" rel="noopener noreferrer" class="youtube-link" aria-label="HyunTech 유튜브 채널">
@@ -61,8 +60,8 @@
     display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
     margin-bottom: 40px;
   }
-  .footer-brand .logo { color: #fff; margin-bottom: 12px; font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-  .footer-brand .logo span { color: var(--primary); }
+  .footer-brand .logo { margin-bottom: 12px; display: flex; align-items: center; }
+  .footer-logo-img { height: 36px; width: auto; object-fit: contain; filter: brightness(0) invert(1); }
   .footer-brand p { font-size: 14px; line-height: 1.6; }
   .youtube-link {
     display: inline-flex; align-items: center; gap: 8px;

@@ -12,8 +12,7 @@ const navItems = [
 <header class="header">
   <div class="header-inner">
     <a href="/" class="logo">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Hyun<span>Tech</span>
+      <img src="/images/logo.png" alt="HyunTech" class="logo-img" width="140" height="40" />
     </a>
     <nav class="nav" id="mainNav">
       {navItems.map(item => (
@@ -37,15 +36,15 @@ const navItems = [
 <div class="trust-bar">
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-    실사용 기반 리뷰
+    실사용 후기 기반
   </div>
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    2025년 2월 업데이트
+    2026년 최신 업데이트
   </div>
   <div class="trust-item">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    독립적 평가 기준
+    객관적 평가 기준
   </div>
 </div>
 
@@ -61,10 +60,15 @@ const navItems = [
     max-width: var(--max-width); margin: 0 auto; padding: 0 20px; height: 64px;
   }
   .logo {
-    font-size: 22px; font-weight: 800; color: var(--text);
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center;
   }
-  .logo span { color: var(--primary); }
+  .logo-img {
+    height: 36px; width: auto; object-fit: contain;
+    border-radius: 6px; transition: filter 0.3s ease;
+  }
+  :global(html.dark) .logo-img {
+    filter: brightness(0) invert(1);
+  }
   .nav { display: flex; align-items: center; gap: 32px; }
   .nav a {
     color: var(--text-secondary); font-size: 15px; font-weight: 500;
