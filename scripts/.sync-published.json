@@ -1,3 +1,16 @@
 {
-  "publishedPages": {}
+  "publishedPages": {
+    "2ff753eb-c013-8165-a5ee-e427ad182579": {
+      "slug": "blue-prince-laptop-top5",
+      "category": "laptop",
+      "publishedAt": "2026-02-01",
+      "filePath": "src/content/posts/laptop/blue-prince-laptop-top5.md"
+    },
+    "2ff753eb-c013-8153-9a3f-e713598a1285": {
+      "slug": "test",
+      "category": "핸드폰",
+      "publishedAt": "2026-02-01T03:20:00.000+00:00",
+      "filePath": "src/content/posts/핸드폰/test.md"
+    }
+  }
 }

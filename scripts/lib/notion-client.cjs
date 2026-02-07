@@ -54,6 +54,7 @@ async function getPublishedPages() {
 
 /**
  * Status="Published" AND Date가 현재 시간보다 과거인 페이지 조회
+ * Date 값이 현재 시간보다 STRICTLY BEFORE인 것만 반환 (현재 시간과 같거나 미래는 제외)
  */
 async function getPublishedPagesBeforeNow() {
   const now = new Date();
@@ -71,7 +72,7 @@ async function getPublishedPagesBeforeNow() {
           },
           {
             property: 'Date',
-            date: { on_or_before: now.toISOString() },
+            date: { before: now.toISOString() },
           },
         ],
       },
@@ -97,6 +98,29 @@ async function getPageById(pageId) {
     console.error(`❌ 페이지 조회 실패 (${pageId}):`, err.message);
     return null;
   }
+}
+
+/**
+ * 여러 page_id로 페이지 조회 (webhook 모드용)
+ * @param {string[]} pageIds - 조회할 페이지 ID 배열
+ * @returns {Promise<Array>} 페이지 객체 배열
+ */
+async function getPagesByIds(pageIds) {
+  const pages = [];
+
+  for (const pageId of pageIds) {
+    try {
+      const page = await notion.pages.retrieve({ page_id: pageId });
+      if (page) {
+        pages.push(page);
+      }
+    } catch (err) {
+      console.error(`❌ 페이지 조회 실패 (${pageId}):`, err.message);
+      // 실패한 페이지는 건너뛰고 계속 진행
+    }
+  }
+
+  return pages;
 }
 
 /**
@@ -167,9 +191,44 @@ function extractPageProperties(page) {
     return null;
   };
 
+  /**
+   * 제목에서 slug 자동 생성
+   * @param {string} title - 제목
+   * @param {string} notionId - Notion 페이지 ID (fallback용)
+   * @returns {string} 생성된 slug
+   */
+  const generateSlugFromTitle = (title, notionId) => {
+    if (!title || !title.trim()) {
+      // 제목이 없으면 notionId의 첫 8자 사용
+      return notionId.substring(0, 8);
+    }
+
+    let slug = title
+      .toLowerCase() // 소문자로 변환
+      .replace(/\s+/g, '-') // 공백을 하이픈으로
+      .replace(/[^a-z0-9가-힣ㄱ-ㅎㅏ-ㅣ\-]/g, '') // 영문, 숫자, 한글, 하이픈만 남김
+      .replace(/-+/g, '-') // 연속된 하이픈을 하나로
+      .replace(/^-+|-+$/g, ''); // 앞뒤 하이픈 제거
+
+    // 결과가 비어있으면 notionId 사용
+    if (!slug) {
+      return notionId.substring(0, 8);
+    }
+
+    return slug;
+  };
+
+  const title = getTitle(find('Title'));
+  const slugFromNotion = getRichText(find('Slug'));
+
+  // Slug가 비어있으면 제목에서 자동 생성
+  const slug = slugFromNotion && slugFromNotion.trim()
+    ? slugFromNotion
+    : generateSlugFromTitle(title, page.id);
+
   return {
-    title: getTitle(find('Title')),
-    slug: getRichText(find('Slug')),
+    title,
+    slug,
     category: getSelect(find('Category')),
     contentType: getSelect(find('ContentType')) || '추천 리스트',
     status: getSelect(find('Status')),
@@ -187,6 +246,7 @@ module.exports = {
   getPublishedPages,
   getPublishedPagesBeforeNow,
   getPageById,
+  getPagesByIds,
   getPageBlocks,
   extractPageProperties,
 };

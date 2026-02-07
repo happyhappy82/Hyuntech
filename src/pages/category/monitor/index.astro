@@ -2,11 +2,13 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CategoryHero from '../../../components/CategoryHero.astro';
 import ContentCard from '../../../components/ContentCard.astro';
-import { getContentByCategory, categoryMeta } from '../../../data/content-registry';
+import { getCollection } from 'astro:content';
+import { mergeWithNotionPosts, categoryMeta } from '../../../data/content-registry';
 
 const category = 'monitor' as const;
 const meta = categoryMeta[category];
-const contents = getContentByCategory(category);
+const notionPosts = await getCollection('posts');
+const contents = mergeWithNotionPosts(category, notionPosts);
 const contentTypes = ['전체', ...new Set(contents.map(c => c.contentType))];
 ---
 
