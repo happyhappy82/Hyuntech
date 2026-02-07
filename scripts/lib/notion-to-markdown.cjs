@@ -229,10 +229,11 @@ function parseTopPick(blocks, startIndex, imageMap) {
     const text = getPlainText(block);
 
     if (block.type === 'paragraph') {
-      // "**최고 추천** · 9.4/10"
-      const badgeMatch = text.match(/\*\*(.+?)\*\*\s*[·]\s*([\d.]+\/\d+)/);
+      // "최고 추천 · 9.4/10" (plain text에는 ** 없음)
+      const badgeMatch = text.match(/\*\*(.+?)\*\*\s*[·]\s*([\d.]+\/\d+)/)
+        || text.match(/(.+?)\s*[·]\s*([\d.]+\/\d+)/);
       if (badgeMatch) {
-        badge = badgeMatch[1];
+        badge = badgeMatch[1].replace(/\*\*/g, '');
         score = badgeMatch[2];
         i++;
         continue;
@@ -243,8 +244,8 @@ function parseTopPick(blocks, startIndex, imageMap) {
       if (text.startsWith('✓') || text.startsWith('✔')) {
         pros.push(text.replace(/^[✓✔]\s*/, ''));
       } else if (text.includes('💰') || text.includes('가격대')) {
-        const priceMatch = text.match(/\*\*(.+?)\*\*/);
-        price = priceMatch ? priceMatch[1] : text.replace(/💰\s*가격대[:\s]*/i, '').trim();
+        const priceMatch = text.match(/\*\*(.+?)\*\*/) || text.match(/가격대[:\s]*(.+)/);
+        price = priceMatch ? priceMatch[1].replace(/\*\*/g, '') : text.replace(/💰\s*가격대[:\s]*/i, '').trim();
       }
       i++;
       continue;
@@ -456,17 +457,36 @@ function parseReviewCard(blocks, startIndex, imageMap) {
     const text = getPlainText(block);
 
     if (block.type === 'paragraph') {
-      // "**최고 추천** · **"AI 작업과..."**"
-      const badgeMatch = text.match(/\*\*(.+?)\*\*\s*[·]\s*\*\*[""](.+?)["""]\*\*/);
-      if (badgeMatch && !badge) {
-        badge = badgeMatch[1];
-        subtitle = badgeMatch[2];
+      // paragraph에서도 ✓ 장점 / ✕ 단점 감지 (Notion API가 heading_3 대신 paragraph으로 보내는 경우)
+      const cleanedText = text.replace(/^#{1,4}\s*/, '');
+      if (cleanedText.includes('✓') && cleanedText.includes('장점')) {
+        inPros = true;
+        inCons = false;
+        inSpecs = false;
+        i++;
+        continue;
+      }
+      if (cleanedText.includes('✕') && cleanedText.includes('단점')) {
+        inCons = true;
+        inPros = false;
+        inSpecs = false;
         i++;
         continue;
       }
 
-      // "⭐ **9.4/10**"
-      const scoreMatch = text.match(/⭐\s*\*\*([\d.]+)\/\d+\*\*/);
+      // "최고 추천 · "AI 작업과..."" (plain text에는 ** 없음)
+      const badgeMatch = text.match(/(.+?)\s*[·]\s*[""](.+?)["""]/)
+        || text.match(/\*\*(.+?)\*\*\s*[·]\s*\*\*[""](.+?)["""]\*\*/);
+      if (badgeMatch && !badge) {
+        badge = badgeMatch[1].replace(/\*\*/g, '');
+        subtitle = badgeMatch[2].replace(/\*\*/g, '');
+        i++;
+        continue;
+      }
+
+      // "⭐ 9.4/10" (plain text에는 ** 없음)
+      const scoreMatch = text.match(/⭐\s*\*?\*?([\d.]+)\/\d+\*?\*?/)
+        || text.match(/⭐\s*([\d.]+)\s*\/\s*\d+/);
       if (scoreMatch) {
         score = parseFloat(scoreMatch[1]);
         i++;
@@ -482,17 +502,24 @@ function parseReviewCard(blocks, startIndex, imageMap) {
         continue;
       }
 
-      // "**추천 대상:**" 텍스트
+      // "추천 대상:" 텍스트 (plain text에는 ** 없음)
       if (text.includes('추천 대상')) {
-        recommendation = text.replace(/\*\*추천 대상:\*\*\s*/, '').replace(/\*\*/g, '');
+        recommendation = text.replace(/\*?\*?추천 대상:\*?\*?\s*/, '').replace(/\*\*/g, '');
         i++;
         continue;
       }
 
-      // 👉 [쿠팡에서 최저가 확인하기](url)
-      const ctaMatch = text.match(/👉\s*\[.+?\]\((.+?)\)/);
-      if (ctaMatch) {
-        ctaUrl = ctaMatch[1];
+      // 👉 CTA 링크 (plain text에는 [](url) 없음, rich_text의 href에서 추출)
+      if (text.includes('👉')) {
+        const richTexts = block[block.type].rich_text;
+        const linkRT = richTexts && richTexts.find(rt => rt.href);
+        if (linkRT) {
+          ctaUrl = linkRT.href;
+        } else {
+          // fallback: 마크다운 패턴
+          const ctaMatch = text.match(/👉\s*\[.+?\]\((.+?)\)/);
+          if (ctaMatch) ctaUrl = ctaMatch[1];
+        }
         i++;
         continue;
       }
@@ -503,10 +530,10 @@ function parseReviewCard(blocks, startIndex, imageMap) {
 
     if (block.type === 'bulleted_list_item') {
       if (inSpecs) {
-        // "**CPU:** AMD Ryzen AI 7 350"
-        const specMatch = text.match(/\*\*(.+?):\*\*\s*(.*)/);
+        // "CPU: AMD Ryzen AI 7 350" (plain text에는 ** 없음)
+        const specMatch = text.match(/\*\*(.+?):\*\*\s*(.*)/) || text.match(/(.+?):\s*(.*)/);
         if (specMatch) {
-          specs.push({ label: specMatch[1], value: specMatch[2] });
+          specs.push({ label: specMatch[1].replace(/\*\*/g, ''), value: specMatch[2].replace(/\*\*/g, '') });
         }
       } else if (inPros) {
         pros.push(text);
