@@ -704,7 +704,7 @@ function parseFaqSection(blocks, startIndex, imageMap) {
     const block = blocks[i];
     if (block.type === 'heading_2') break;
 
-    // 불릿 리스트 아이템이 질문, 자식 텍스트가 답변
+    // 패턴 A: bulleted_list_item (Notion 기본 불릿 리스트)
     if (block.type === 'bulleted_list_item') {
       const question = getPlainText(block);
       let answer = '';
@@ -746,6 +746,72 @@ function parseFaqSection(blocks, startIndex, imageMap) {
 
       if (question) {
         faqItems.push({ question, answer });
+      }
+      i++;
+      continue;
+    }
+
+    // 패턴 B: toggle 블록 (Notion 토글 리스트)
+    if (block.type === 'toggle') {
+      const question = getPlainText(block);
+      let answer = '';
+      if (block.children) {
+        answer = block.children
+          .map((child) => {
+            const data = child[child.type];
+            if (data && data.rich_text) {
+              return richTextToHtml(data.rich_text);
+            }
+            return '';
+          })
+          .filter(Boolean)
+          .join(' ');
+      }
+      if (question) {
+        faqItems.push({ question, answer });
+      }
+      i++;
+      continue;
+    }
+
+    // 패턴 C: paragraph에 •/· 기호로 작성된 FAQ (텍스트 불릿)
+    if (block.type === 'paragraph') {
+      const text = getPlainText(block);
+      const questionMatch = text.match(/^\s*[•·]\s*(.+)/);
+      if (questionMatch) {
+        const question = questionMatch[1].trim();
+        let answer = '';
+
+        // 다음 블록에서 ◦/○ 답변 수집
+        let j = i + 1;
+        const answerParts = [];
+        while (j < blocks.length) {
+          const nextBlock = blocks[j];
+          if (nextBlock.type === 'heading_2') break;
+          if (nextBlock.type !== 'paragraph') break;
+
+          const nextText = getPlainText(nextBlock);
+          // 다음 질문(•)이 나오면 중단
+          if (/^\s*[•·]\s*.+/.test(nextText)) break;
+          // ◦/○ 패턴 또는 들여쓰기된 답변
+          if (/^\s*[◦○]/.test(nextText) || /^\s{2,}/.test(nextText)) {
+            const answerHtml = richTextToHtml(nextBlock[nextBlock.type].rich_text);
+            // ◦/○ 기호 및 앞쪽 공백 제거
+            const cleanedAnswer = answerHtml.replace(/^\s*[◦○]\s*/, '').trim();
+            if (cleanedAnswer) answerParts.push(cleanedAnswer);
+          }
+          j++;
+        }
+
+        if (answerParts.length > 0) {
+          answer = answerParts.join(' ');
+        }
+
+        if (question) {
+          faqItems.push({ question, answer });
+        }
+        i = answerParts.length > 0 ? j : i + 1;
+        continue;
       }
     }
 
