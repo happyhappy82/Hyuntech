@@ -140,6 +140,7 @@ const {
   .spec {
     font-size: 14px;
     color: var(--text-secondary, #64748b);
+    word-break: break-word;
   }
   .spec strong {
     color: var(--text, #1e293b);
@@ -269,7 +270,16 @@ const {
       font-size: 18px;
     }
     .review-card-specs {
-      gap: 12px;
+      gap: 8px 12px;
+    }
+    .review-card-actions {
+      flex-direction: column;
+    }
+    .review-card-actions .cta-btn,
+    .review-card-actions .btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
     }
   }
 </style>

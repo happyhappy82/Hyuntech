@@ -46,7 +46,7 @@ const organizationSchema = JSON.stringify({
     <script type="application/ld+json" set:html={organizationSchema} />
   </Fragment>
 
-  <main>
+  <div>
   <!-- Hero -->
   <section class="hero">
     <div class="container">
@@ -194,14 +194,14 @@ const organizationSchema = JSON.stringify({
     </div>
   </section>
 
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
   /* Hero */
   .hero {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-    color: #fff; padding: 80px 0 60px; position: relative; overflow: hidden;
+    color: #fff; padding: 80px 0 60px; position: relative; overflow: hidden; min-width: 0;
   }
   .hero::before {
     content: ''; position: absolute; top: -50%; right: -20%;
@@ -274,6 +274,7 @@ const organizationSchema = JSON.stringify({
     .top-picks { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 768px) {
+    .hero { padding: 48px 0 36px; }
     .hero h1 { font-size: 30px; }
     .hero p { font-size: 16px; }
     .hero-actions { flex-direction: column; }

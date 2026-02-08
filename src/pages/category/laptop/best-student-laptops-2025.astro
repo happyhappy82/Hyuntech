@@ -37,12 +37,38 @@ const sellers = [
   { store: '11st', label: '11번가', price: '1,410,000원', productId: 'macbook-air-m3' },
   { store: 'amazon', label: 'Amazon', price: '$1,099', productId: 'macbook-air-m3' },
 ];
+
+const siteUrl = 'https://hyuntech.ai.kr';
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "2025년 대학생용 노트북 추천 TOP 7 (실사용 기준)",
+  "description": "2025년 대학생용 노트북 추천 TOP 7. 실사용 기준 배터리, 무게, 성능, 가격 대비 최고의 노트북을 선정했습니다.",
+  "datePublished": "2025-02-01T00:00:00+09:00",
+  "dateModified": "2025-02-01T00:00:00+09:00",
+  "author": { "@type": "Organization", "name": "HyunTech", "url": siteUrl },
+  "publisher": { "@type": "Organization", "name": "HyunTech", "url": siteUrl, "logo": { "@type": "ImageObject", "url": `${siteUrl}/og-default.png` } },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/category/laptop/best-student-laptops-2025/` }
+});
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "홈", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": "노트북", "item": `${siteUrl}/category/laptop/` },
+    { "@type": "ListItem", "position": 3, "name": "대학생 노트북 추천" }
+  ]
+});
 ---
 
 <BaseLayout
   title="2025년 대학생용 노트북 추천 TOP 7 - HyunTech"
   description="2025년 대학생용 노트북 추천 TOP 7. 실사용 기준 배터리, 무게, 성능, 가격 대비 최고의 노트북을 선정했습니다."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={articleSchema} />
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
   <div class="container">
     <div class="breadcrumb">
       <a href="/">홈</a> <span class="sep">/</span>

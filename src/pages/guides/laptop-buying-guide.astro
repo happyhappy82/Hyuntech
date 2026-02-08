@@ -20,12 +20,38 @@ const faqItems = [
   { question: '중고 노트북도 괜찮은가요?', answer: '예산이 매우 한정적이라면 고려할 수 있지만, <strong>배터리 수명과 보증이 문제입니다.</strong> 중고를 사려면 배터리 사이클 수를 반드시 확인하고, 가능하면 인증 리퍼비시(Apple Refurbished 등)를 추천합니다.' },
   { question: '노트북 보호 필름이나 케이스는 필요한가요?', answer: '화면 보호 필름은 선택사항이지만, <strong>파우치/케이스는 강력 추천합니다.</strong> 가방 안에서 다른 물건과 부딪혀 스크래치가 나기 쉽습니다. 특히 알루미늄/마그네슘 바디 노트북은 찍힘에 취약합니다.' },
 ];
+
+const siteUrl = 'https://hyuntech.ai.kr';
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "2025 노트북 구매 가이드 – 구매 전 알아야 할 모든 것",
+  "description": "노트북 구매 전 반드시 알아야 할 CPU, RAM, SSD, 디스플레이, 배터리 선택 기준을 쉽게 정리했습니다.",
+  "datePublished": "2025-01-30T00:00:00+09:00",
+  "dateModified": "2025-01-30T00:00:00+09:00",
+  "author": { "@type": "Organization", "name": "HyunTech", "url": siteUrl },
+  "publisher": { "@type": "Organization", "name": "HyunTech", "url": siteUrl, "logo": { "@type": "ImageObject", "url": `${siteUrl}/og-default.png` } },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/guides/laptop-buying-guide/` }
+});
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "홈", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": "구매 가이드", "item": `${siteUrl}/guides/laptop-buying-guide/` },
+    { "@type": "ListItem", "position": 3, "name": "노트북 구매 가이드" }
+  ]
+});
 ---
 
 <BaseLayout
   title="2025 노트북 구매 가이드 - 구매 전 알아야 할 모든 것 | HyunTech"
   description="노트북 구매 전 반드시 알아야 할 CPU, RAM, SSD, 디스플레이, 배터리 선택 기준을 쉽게 정리했습니다."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={articleSchema} />
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
   <div class="container">
     <div class="breadcrumb">
       <a href="/">홈</a> <span class="sep">/</span>

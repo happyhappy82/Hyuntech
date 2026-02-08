@@ -19,6 +19,28 @@ const sellers = [
   { store: '11st', label: '11번가', price: '1,599,000원', productId: 'lg-gram-16' },
 ];
 
+const siteUrl = 'https://hyuntech.ai.kr';
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "LG 그램 16 (2025) 실사용 리뷰 – 배터리와 휴대성은 최고?",
+  "description": "LG 그램 16 2025년형 실사용 리뷰. 1.19kg 초경량, 22시간 배터리의 진실. 실사용 장단점과 경쟁 모델 비교를 정리했습니다.",
+  "datePublished": "2025-02-03T00:00:00+09:00",
+  "dateModified": "2025-02-03T00:00:00+09:00",
+  "author": { "@type": "Organization", "name": "HyunTech", "url": siteUrl },
+  "publisher": { "@type": "Organization", "name": "HyunTech", "url": siteUrl, "logo": { "@type": "ImageObject", "url": `${siteUrl}/og-default.png` } },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/review/lg-gram-16-2025/` }
+});
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "홈", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": "노트북", "item": `${siteUrl}/category/laptop/` },
+    { "@type": "ListItem", "position": 3, "name": "LG 그램 16 (2025) 리뷰" }
+  ]
+});
+
 const competitors = [
   { name: 'LG 그램 16 (2025)', price: '159만원~', weight: '1.19kg', cpu: 'Intel Ultra 7', battery: '22시간', display: '16" WQXGA IPS', target: '휴대성 + 배터리', productId: 'lg-gram-16', isBest: true },
   { name: 'MacBook Air M3', price: '139만원~', weight: '1.24kg', cpu: 'Apple M3', battery: '18시간', display: '13.6" Retina', target: '올라운더', productId: 'macbook-air-m3' },
@@ -37,6 +59,10 @@ const faqItems = [
   title="LG 그램 16 (2025) 실사용 리뷰 - 배터리와 휴대성은 최고? | HyunTech"
   description="LG 그램 16 2025년형 실사용 리뷰. 1.19kg 초경량, 22시간 배터리의 진실. 실사용 장단점과 경쟁 모델 비교를 정리했습니다."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={articleSchema} />
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
   <div class="container">
     <div class="breadcrumb">
       <a href="/">홈</a> <span class="sep">/</span>

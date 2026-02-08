@@ -35,12 +35,38 @@ const sellers = [
   { store: 'naver', label: '네이버 쇼핑', price: '425,000원', productId: 'lg-27up850n' },
   { store: '11st', label: '11번가', price: '432,000원', productId: 'lg-27up850n' },
 ];
+
+const siteUrl = 'https://hyuntech.ai.kr';
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "2025년 모니터 추천 TOP 6 – 업무용/게이밍/디자인별 최고의 선택",
+  "description": "2025년 용도별 모니터 추천. 27인치 4K 업무용부터 32인치 게이밍까지, 실사용 기준 최고의 모니터를 선정했습니다.",
+  "datePublished": "2025-01-28T00:00:00+09:00",
+  "dateModified": "2025-01-28T00:00:00+09:00",
+  "author": { "@type": "Organization", "name": "HyunTech", "url": siteUrl },
+  "publisher": { "@type": "Organization", "name": "HyunTech", "url": siteUrl, "logo": { "@type": "ImageObject", "url": `${siteUrl}/og-default.png` } },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": `${siteUrl}/category/monitor/best-monitors-2025/` }
+});
+const breadcrumbSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "홈", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": "모니터", "item": `${siteUrl}/category/monitor/` },
+    { "@type": "ListItem", "position": 3, "name": "모니터 추천" }
+  ]
+});
 ---
 
 <BaseLayout
   title="2025년 모니터 추천 TOP 6 - 업무용/게이밍/디자인 | HyunTech"
   description="2025년 용도별 모니터 추천. 27인치 4K 업무용부터 32인치 게이밍까지, 실사용 기준 최고의 모니터를 선정했습니다."
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={articleSchema} />
+    <script type="application/ld+json" set:html={breadcrumbSchema} />
+  </Fragment>
   <div class="container">
     <div class="breadcrumb">
       <a href="/">홈</a> <span class="sep">/</span>
