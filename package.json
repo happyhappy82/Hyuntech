@@ -14,7 +14,8 @@
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@notionhq/client": "^2.2.15",
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "notion-to-md": "^3.1.9"
   },
   "browserslist": [
     "defaults",

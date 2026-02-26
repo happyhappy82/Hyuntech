@@ -95,6 +95,48 @@ function getExtension(url) {
 }
 
 /**
+ * 마크다운 문자열에서 이미지 URL을 찾아 다운로드하고 로컬 경로로 치환
+ * notion-to-md가 생성한 마크다운의 ![alt](url) 패턴 처리
+ * @param {string} markdown - 마크다운 문자열
+ * @param {string} slug - 포스트 slug (이미지 저장 디렉토리명)
+ * @returns {Promise<string>} 이미지 경로가 치환된 마크다운
+ */
+async function processMarkdownImages(markdown, slug) {
+  const slugDir = path.join(IMAGES_DIR, slug);
+  // ![alt](url) 패턴 매칭
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const matches = [...markdown.matchAll(imageRegex)];
+
+  if (matches.length === 0) return markdown;
+
+  let result = markdown;
+  let index = 0;
+
+  for (const match of matches) {
+    const [fullMatch, alt, url] = match;
+
+    // 이미 로컬 경로면 건너뛰기
+    if (url.startsWith('/') || url.startsWith('./')) continue;
+
+    const ext = getExtension(url);
+    const filename = `${index}${ext}`;
+    const destPath = path.join(slugDir, filename);
+    const publicPath = `/notion-images/${slug}/${filename}`;
+
+    try {
+      await downloadFile(url, destPath);
+      result = result.replace(fullMatch, `![${alt}](${publicPath})`);
+      index++;
+      console.log(`  📷 이미지 다운로드: ${filename}`);
+    } catch (err) {
+      console.warn(`  ⚠️ 이미지 다운로드 실패: ${url} - ${err.message}`);
+    }
+  }
+
+  return result;
+}
+
+/**
  * 특정 slug의 이미지 디렉토리 삭제
  */
 function removeImages(slug) {
@@ -106,5 +148,6 @@ function removeImages(slug) {
 
 module.exports = {
   downloadImages,
+  processMarkdownImages,
   removeImages,
 };

@@ -3,11 +3,10 @@ const path = require('path');
 const {
   getPublishedPagesBeforeNow,
   getPageById,
-  getPageBlocks,
   extractPageProperties
 } = require('./lib/notion-client.cjs');
-const { blocksToMarkdown } = require('./lib/notion-to-markdown.cjs');
-const { downloadImages, removeImages } = require('./lib/image-downloader.cjs');
+const { convertPage } = require('./lib/notion-to-markdown.cjs');
+const { processMarkdownImages, removeImages } = require('./lib/image-downloader.cjs');
 const { generateFrontmatter } = require('./lib/frontmatter.cjs');
 
 const POSTS_DIR = path.join(__dirname, '../src/content/posts');
@@ -260,14 +259,11 @@ async function webhookSync() {
  * 페이지 콘텐츠를 생성하고 파일로 저장
  */
 async function savePageContent(page, props) {
-  // 블록 가져오기
-  const blocks = await getPageBlocks(page.id);
+  // notion-to-md로 마크다운 변환
+  let markdown = await convertPage(page.id);
 
-  // 이미지 다운로드
-  const imageMap = await downloadImages(blocks, props.slug);
-
-  // Markdown 변환
-  const markdown = blocksToMarkdown(blocks, imageMap);
+  // 마크다운 내 이미지 다운로드 및 경로 치환
+  markdown = await processMarkdownImages(markdown, props.slug);
 
   // 프론트매터 생성
   const frontmatter = generateFrontmatter(props);
